@@ -21,20 +21,20 @@ return new class extends Migration
             // Creates a VARCHAR type column to store the role's name (ej: 'client', 'admin')
             $table->string('role_name');
 
-            // Creates a brief description column. the ->nullable() method indicates that it is optional
+            // Creates a column FOR brief descriptions. the ->nullable() method indicates that it is optional
             $table->string('description')->nullable();
 
-            // automatically creates two TIMESTAMP type columns: 'created_at' y 'updated_at'
+            // Automatically creates two TIMESTAMP type columns: 'created_at' y 'updated_at'
             $table->timestamps();
 
-            // creates the 'deleted_at' column that's needed for SoftDeletes.
-            // this means roles are not fully deleted, just inactive
+            // Creates the 'deleted_at' column that's needed for SoftDeletes.
+            // This means roles are not fully deleted, just inactive
             $table->softDeletes();
         });
     }
 
     /**
-     * Reverses migrations.
+     * Reverts migrations.
      * This method is called when running 'php artisan migrate:rollback'.
      * It undoes everything done in up().
      */
