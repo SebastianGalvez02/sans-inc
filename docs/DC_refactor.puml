@@ -1,0 +1,86 @@
+@startuml
+title Class Diagram - Database Models
+
+skinparam class {
+    BackgroundColor wheat
+    ArrowColor Coral
+}
+
+
+class Role {
+  +int RoleId
+  +string RoleName
+  +string Description
+}
+
+class User {
+  +int UserId
+  +int RoleId
+  +string Name
+  +string Email
+  +string HashedPassword
+  +string RecoveryEmail
+  +bool Active
+}
+
+class Client {
+  +int ClientId
+  +int UserId
+  +string RealName
+  +string Phone
+  +bool Active
+}
+
+class Category {
+  +int CategoryId
+  +string CategoryName
+  +string Description
+}
+
+class Product {
+  +int ProductId
+  +int CategoryId
+  +string Name
+  +string Description
+  +float Price
+  +string Tag
+  +bool Active
+}
+
+class Post {
+  +int PostId
+  +int UserId
+  +int ProductId
+  +string Review
+  +float Rating
+  +DateTime PostDate
+  +int LikeCount
+  +bool Active
+}
+
+class Comment {
+  +int CommentId
+  +int PostId
+  +int UserId
+  +string Content
+  +bool Active
+}
+
+class Appointment {
+  +int AppointmentId
+  +int ClientId
+  +string ContactReason
+  +DateTime ScheduledDate
+  +bool Active
+}
+
+Role "1" -- "0..*" User : assigns
+User "1" -- "0..1" Client : can be
+Category "1" -- "0..*" Product : contains
+User "1" -- "0..*" Post : publishes
+Product "1" -- "0..*" Post : appears in
+User "1" -- "0..*" Comment : writes
+Post "1" -- "0..*" Comment : has
+Client "1" -- "0..*" Appointment : schedules
+
+@enduml
