@@ -2,20 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes; // Needed for Soft Delete
 
 /**
  * Role model
- * * This model represents the 'roles' table in the database.
+ * This model represents the 'roles' table in the database.
  * It manages the system's profile types
+ * @method static \App\Models\Role create(array $attributes = [])
+ * /
  */
 class Role extends Model
 {
-    // Enables the use of Factories to easily generate fake test data
-    use HasFactory;
-
     // Enables soft deletes (deleted records are only hidden by filling the 'deleted_at' column)
     use SoftDeletes;
 
