@@ -7,40 +7,40 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones (Run the migrations).
-     * Este método se llama cuando ejecutas 'php artisan migrate'.
-     * Su función es construir la estructura de la tabla en la base de datos.
+     * Runs the migrations.
+     * This method is called when running 'php artisan migrate'.
+     * It builds the table structure in the database.
      */
     public function up(): void
     {
-        // Crea una nueva tabla llamada 'roles'
+        // Creates a new table called 'roles'
         Schema::create('roles', function (Blueprint $table) {
-            // Genera una llave primaria (PK) autoincremental llamada 'id'
+            // Generates an Auto-incrementing primary key(PK) called 'id'
             $table->id();
 
-            // Crea una columna tipo VARCHAR para guardar el nombre del rol (ej: 'cliente', 'admin')
-            $table->string('nombre_rol');
+            // Creates a VARCHAR type column to store the role's name (ej: 'client', 'admin')
+            $table->string('role_name');
 
-            // Crea una columna para una breve descripción. El método ->nullable() indica que no es obligatoria
-            $table->string('descripcion')->nullable();
+            // Creates a brief description column. the ->nullable() method indicates that it is optional
+            $table->string('description')->nullable();
 
-            // Crea automáticamente dos columnas de tipo TIMESTAMP: 'created_at' y 'updated_at'
+            // automatically creates two TIMESTAMP type columns: 'created_at' y 'updated_at'
             $table->timestamps();
 
-            // Crea la columna 'deleted_at' requerida para el borrado lógico (SoftDeletes).
-            // Así los roles no se borran físicamente, solo quedan inactivos.
+            // creates the 'deleted_at' column that's needed for SoftDeletes.
+            // this means roles are not fully deleted, just inactive
             $table->softDeletes();
         });
     }
 
     /**
-     * Revierte las migraciones (Reverse the migrations).
-     * Este método se llama cuando ejecutas 'php artisan migrate:rollback'.
-     * Su función es deshacer lo que hizo el método up().
+     * Reverses migrations.
+     * This method is called when running 'php artisan migrate:rollback'.
+     * It undoes everything done in up().
      */
     public function down(): void
     {
-        // Elimina la tabla 'roles' de la base de datos si es que existe
+        // Deletes the 'roles' table from the database if it exists
         Schema::dropIfExists('roles');
     }
 };
