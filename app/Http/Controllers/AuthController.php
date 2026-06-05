@@ -17,10 +17,13 @@ class AuthController extends Controller
     {
         // 1. Validate the incoming request data
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            // Cambiamos el máximo a 16 caracteres
+            'name' => 'required|string|max:16',
+
+            // Cambiamos el máximo a 100 caracteres
+            'email' => 'required|string|email|max:100|unique:users',
+
             'role_id' => 'required|exists:roles,id',
-            // Password must be at least 8 chars, contain letters, numbers, symbols, and be confirmed
             'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()->symbols()],
         ]);
 
