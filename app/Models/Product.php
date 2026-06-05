@@ -24,5 +24,14 @@ class Product extends Model
         'active' => 'boolean'
     ];
 
-
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'categoryId', 'categoryId');
+    }
+    /*
+    public function publications()
+    {
+        return $this->hasMany(Publication::class, 'productId', 'productId');
+    }
+    */
 }
