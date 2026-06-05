@@ -17,17 +17,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-
-            // Foreign key linking to the 'roles' table
             $table->foreignId('role_id')->constrained('roles');
 
-            // Basic user information
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password'); // Laravel uses this specific name by default
+            // Agregamos el límite de 16 directamente a la base de datos
+            $table->string('name', 16);
+
+            // Agregamos el límite de 100 al correo
+            $table->string('email', 100)->unique();
+
+            $table->string('password');
             $table->string('recovery_email')->nullable();
 
-            // Timestamps (created_at, updated_at) and SoftDeletes (deleted_at)
             $table->timestamps();
             $table->softDeletes();
         });
