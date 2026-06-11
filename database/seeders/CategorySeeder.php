@@ -10,11 +10,12 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['categoryName' => 'Business Technology',       'categoryDescription' => 'Professional technology products for modern business operations'],
-            ['categoryName' => 'Office Solutions',          'categoryDescription' => 'Essential office products and workplace productivity solutions'],
-            ['categoryName' => 'Consulting Services',       'categoryDescription' => 'Strategic services for process improvement and business growth'],
-            ['categoryName' => 'Managed Support',           'categoryDescription' => 'Ongoing support services for reliable daily operations'],
-            ['categoryName' => 'Training and Development',  'categoryDescription' => 'Professional training programs for teams and organizations'],
+            ['categoryName' => 'Limpieza', 'categoryDescription' => 'Productos destinados a la limpieza del hogar y superficies'],
+            ['categoryName' => 'Uso_Personal', 'categoryDescription' => 'Productos de higiene y cuidado personal'],
+            ['categoryName' => 'Irritante', 'categoryDescription' => 'Productos que pueden causar irritación en piel o mucosas'],
+            ['categoryName' => 'Inflamable', 'categoryDescription' => 'Productos con componentes inflamables que requieren precaución'],
+            ['categoryName' => 'Variedades', 'categoryDescription' => 'Productos disponibles en packs, promociones o múltiples presentaciones'],
+            ['categoryName' => 'Aroma', 'categoryDescription' => 'Productos con fragancia o aroma especial'],
         ];
 
         foreach ($categories as $category) {
