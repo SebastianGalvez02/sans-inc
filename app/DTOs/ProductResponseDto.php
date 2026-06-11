@@ -14,9 +14,9 @@ class ProductResponseDto implements Arrayable, JsonSerializable
         public readonly ?string $description,
         public readonly float $price,
         public readonly ?string $tag,
-        public readonly ?int $categoryId,
         public readonly bool $active
-    ) {}
+    ) {
+    }
 
     /**
      * Map Product model to ProductResponseDto.
@@ -32,7 +32,6 @@ class ProductResponseDto implements Arrayable, JsonSerializable
             description: $product->description,
             price: (float) $product->price,
             tag: $product->tag,
-            categoryId: $product->categoryId ? (int) $product->categoryId : null,
             active: (bool) $product->active
         );
     }
@@ -50,11 +49,9 @@ class ProductResponseDto implements Arrayable, JsonSerializable
             'description' => $this->description,
             'price' => $this->price,
             'tag' => $this->tag,
-            'categoryId' => $this->categoryId,
             'active' => $this->active,
         ];
     }
-
     /**
      * Convert the object to its JSON serializable representation.
      *
