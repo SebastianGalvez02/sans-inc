@@ -10,8 +10,10 @@ class VerificationCode extends Model
     use HasFactory;
 
     protected $fillable = [
-        'email',
+        'user_id',
         'code',
         'expires_at',
+        'failed_attempts',
+        'date_to_resend',
     ];
 }

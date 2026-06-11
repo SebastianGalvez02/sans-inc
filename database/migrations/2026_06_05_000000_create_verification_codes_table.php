@@ -9,10 +9,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('verification_codes', function (Blueprint $table) {
+            //user ID
             $table->id();
-            $table->string('email');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
             $table->string('code');
+
             $table->timestamp('expires_at');
+
+            $table->integer('failed_attempts')->default(0);
+            $table->timestamp('date_to_resend')->nullable();
+
             $table->timestamps();
         });
     }
