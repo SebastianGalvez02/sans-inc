@@ -2,8 +2,15 @@
 
 namespace App\Models;
 
-class Publication
+use Illuminate\Database\Eloquent\Model;
+
+class Publication extends Model
 {
+    protected $table = 'publications';
+    protected $primaryKey = 'publicationId';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     protected $fillable = [
         'publicationId',
         'rating',
@@ -11,7 +18,8 @@ class Publication
         'userId',
         'productId',
         'numberOfLikes',
-        'active'
+        'active',
+        'review'
     ];
     protected $casts = [
         'publicationDate' => 'datetime',
@@ -20,18 +28,24 @@ class Publication
         'userId' => 'integer',
         'productId' => 'integer',
         'numberOfLikes' => 'integer',
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'review' => 'string'
     ];
 
-    public function getReview(){
-        return $this->review;
-    }
-    public function getRating(){
-        return $this->rating;
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId', 'userId');
     }
 
-//    lo que creo que como luciria la funcion review por ahora puede que no este correcto
-//    public function review(string $text) {}
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'productId', 'productId');
+    }
+
+    //  public function comments()
+    //  {
+    //      return $this->hasMany(Comment::class, 'publicationId', 'publicationId');
+    //   }
 
 
 }
