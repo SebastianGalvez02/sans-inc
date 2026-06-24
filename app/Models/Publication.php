@@ -10,6 +10,7 @@ class Publication extends Model
     protected $primaryKey = 'publicationId';
     public $incrementing = true;
     protected $keyType = 'int';
+    public $timestamps = false;
 
     protected $fillable = [
         'publicationId',
