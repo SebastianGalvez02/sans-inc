@@ -30,6 +30,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Interfaces\ICategoryService::class,
             \App\Services\Implements\CategoryService::class
         );
+
+        $this->app->bind(
+            \App\Repositories\Interfaces\IPublicationRepository::class,
+            \App\Repositories\Implements\PublicationRepository::class
+        );
+
+        $this->app->bind(
+            \App\Services\Interfaces\IPublicationService::class,
+            \App\Services\Implements\PublicationService::class
+        );
     }
 
     /**
