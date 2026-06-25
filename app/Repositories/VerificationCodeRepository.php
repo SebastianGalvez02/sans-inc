@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Models\VerificationCode;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 
 /**
  * VerificationCodeRepository
@@ -135,7 +134,7 @@ class VerificationCodeRepository
 
         return VerificationCode::create([
             'user_id'         => $userId,
-            'code'            => strtoupper(Str::random(6)),
+            'code'            => str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT),
             'expires_at'      => Carbon::now()->addMinutes(self::CODE_EXPIRY_MINUTES),
             'failed_attempts' => 0,
             'date_to_resend'  => null,
