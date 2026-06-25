@@ -32,10 +32,9 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'categoryId', 'categoryId');
     }
-    /*
+
     public function publications()
     {
         return $this->hasMany(Publication::class, 'productId', 'productId');
     }
-    */
 }
