@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PublicationController;
 
 
 /*
@@ -36,3 +37,12 @@ Route::get('/categories/{id}', [CategoryController::class, 'show']);
 Route::put('/categories/{id}', [CategoryController::class, 'update']);
 Route::patch('/categories/{id}', [CategoryController::class, 'update']);
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
+Route::get('/publications', [PublicationController::class, 'index']);
+Route::get('/publications/{id}', [PublicationController::class, 'show']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/publications', [PublicationController::class, 'store']);
+    Route::put('/publications/{id}', [PublicationController::class, 'update']);
+    Route::patch('/publications/{id}', [PublicationController::class, 'update']);
+    Route::delete('/publications/{id}', [PublicationController::class, 'destroy']);
+});
