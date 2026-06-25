@@ -14,6 +14,7 @@ class ProductResponseDto implements Arrayable, JsonSerializable
         public readonly ?string $description,
         public readonly float $price,
         public readonly ?string $tag,
+        public readonly int $categoryId,
         public readonly bool $active
     ) {
     }
@@ -32,6 +33,7 @@ class ProductResponseDto implements Arrayable, JsonSerializable
             description: $product->description,
             price: (float) $product->price,
             tag: $product->tag,
+            categoryId: (int) $product->categoryId,
             active: (bool) $product->active
         );
     }
@@ -49,6 +51,7 @@ class ProductResponseDto implements Arrayable, JsonSerializable
             'description' => $this->description,
             'price' => $this->price,
             'tag' => $this->tag,
+            'categoryId' => $this->categoryId,
             'active' => $this->active,
         ];
     }

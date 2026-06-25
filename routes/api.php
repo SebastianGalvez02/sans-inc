@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 
 
 /*
@@ -45,6 +46,10 @@ Route::middleware('auth.jwt')->group(function () {
     Route::get('/user', function (Request $request) {
         return response()->json($request->user());
     });
+
+    // Profile editing (RF-06) — name and password of the authenticated user
+    Route::put('/user/profile',  [ProfileController::class, 'updateProfile']);
+    Route::put('/user/password', [ProfileController::class, 'updatePassword']);
 
     // Add more protected routes here...
 });
