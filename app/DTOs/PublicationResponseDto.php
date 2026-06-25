@@ -11,6 +11,10 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
     public function __construct(
         public readonly int $publicationId,
         public readonly int $productId,
+        public readonly ?string $productName,
+        public readonly ?int $categoryId,
+        public readonly ?string $categoryName,
+        public readonly ?string $tag,
         public readonly float $rating,
         public readonly string $review,
         public readonly int $numberOfLikes,
@@ -23,9 +27,16 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
 
     public static function fromModel(Publication $publication): self
     {
+        $product = $publication->product;
+        $category = $product?->category;
+
         return new self(
             publicationId: (int) $publication->publicationId,
             productId: (int) $publication->productId,
+            productName: $product?->name,
+            categoryId: $category ? (int) $category->categoryId : null,
+            categoryName: $category?->categoryName,
+            tag: $product?->tag,
             rating: (float) $publication->rating,
             review: (string) $publication->review,
             numberOfLikes: (int) $publication->numberOfLikes,
@@ -40,6 +51,10 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
         return [
             'publicationId' => $this->publicationId,
             'productId' => $this->productId,
+            'productName' => $this->productName,
+            'categoryId' => $this->categoryId,
+            'categoryName' => $this->categoryName,
+            'tag' => $this->tag,
             'rating' => $this->rating,
             'review' => $this->review,
             'numberOfLikes' => $this->numberOfLikes,

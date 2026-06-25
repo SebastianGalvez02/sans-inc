@@ -25,13 +25,19 @@ public function __construct(IPublicationService $publicationService)
 public function index(Request $request): JsonResponse
 {
     $productId = $request->query('productId');
+    $categoryId = $request->query('categoryId');
 
     if ($productId !== null) {
         $request->validate(['productId' => 'integer|exists:products,productId']);
         $productId = (int) $productId;
     }
 
-    $publications = $this->publicationService->listPublications($productId);
+    if ($categoryId !== null) {
+        $request->validate(['categoryId' => 'integer|exists:categories,categoryId']);
+        $categoryId = (int) $categoryId;
+    }
+
+    $publications = $this->publicationService->listPublications($productId, $categoryId);
     return response()->json($publications);
 }
 public function show(int $id): JsonResponse

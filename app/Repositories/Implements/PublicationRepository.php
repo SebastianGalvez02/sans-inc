@@ -12,7 +12,9 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getAllActive()
     {
-        return Publication::where('active', true)->get();
+        return Publication::with('product.category')
+            ->where('active', true)
+            ->get();
     }
 
     /**
@@ -21,6 +23,7 @@ class PublicationRepository implements IPublicationRepository
     public function findActiveById(int $id)
     {
         return Publication::where('publicationId', $id)
+            ->with('product.category')
             ->where('active', true)
             ->first();
     }
@@ -30,8 +33,22 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByProductId(int $productId)
     {
-        return Publication::where('productId', $productId)
+        return Publication::with('product.category')
+            ->where('productId', $productId)
             ->where('active', true)
+            ->get();
+    }
+
+    /**
+     * Funcion que retorna las publicaciones activas asociadas a una categoria de producto
+     */
+    public function getByCategoryId(int $categoryId)
+    {
+        return Publication::with('product.category')
+            ->where('active', true)
+            ->whereHas('product', function ($query) use ($categoryId) {
+                $query->where('categoryId', $categoryId);
+            })
             ->get();
     }
 
@@ -40,7 +57,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByUserId(int $userId)
     {
-        return Publication::where('userId', $userId)
+        return Publication::with('product.category')
+            ->where('userId', $userId)
             ->where('active', true)
             ->get();
     }
@@ -52,7 +70,7 @@ class PublicationRepository implements IPublicationRepository
     public function create(array $data)
     {
         
-        return Publication::create($data);
+        return Publication::create($data)->load('product.category');
     }
 
     /**
@@ -62,6 +80,6 @@ class PublicationRepository implements IPublicationRepository
     {
         $publication = Publication::findOrFail($id);
         $publication->update($data);
-        return $publication;
+        return $publication->load('product.category');
     }
 }

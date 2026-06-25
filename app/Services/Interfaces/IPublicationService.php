@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 interface IPublicationService
 {
-    public function listPublications(?int $productId = null): Collection;
+    public function listPublications(?int $productId = null, ?int $categoryId = null): Collection;
 
     public function getPublicationById(int $id): PublicationResponseDto;
 
