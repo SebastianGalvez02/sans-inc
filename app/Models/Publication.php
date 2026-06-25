@@ -35,7 +35,7 @@ class Publication extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'userId', 'userId');
+        return $this->belongsTo(User::class, 'userId', 'id');
     }
 
     public function product()
