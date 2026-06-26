@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPasswordMail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\User;
@@ -225,36 +226,24 @@ class AuthController extends Controller
      */
     public function forgotPassword(Request $request): JsonResponse
     {
-        // 1. Validate incoming data
-        $request->validate([
-            'email' => 'required|string|email',
-        ]);
+        // 1. Validate and map to DTO
+        $requestDTO = ForgotPasswordRequestDTO::fromRequest($request);
 
-        // 2. Map to request DTO
-        $requestDTO = new ForgotPasswordRequestDTO($request->email);
-
-        // 3. Look up the user
+        // 2. Look up the user — 404 if not found
         $user = $this->userRepository->findByEmail($requestDTO->email);
 
-        // 4. If user exists, generate and send reset code
-        if ($user) {
-            $record = $this->verificationCodeRepository->createResetCode($user->id);
-
-            // Send the code via email
-            Mail::raw(
-                "Your password reset code is: {$record->code}\n\nThis code expires in " .
-                VerificationCodeRepository::CODE_EXPIRY_MINUTES . " minutes.",
-                function ($message) use ($user) {
-                    $message->to($user->email)
-                            ->subject('Password Reset Code');
-                }
-            );
+        if (!$user) {
+            return response()->json(['message' => 'No account found with that email'], 404);
         }
 
-        // 5. Always return 200 to avoid revealing whether the email exists
-        return response()->json([
-            'message' => 'If that email is registered, a reset code has been sent',
-        ], 200);
+        // 3. Generate reset code and dispatch email to the queue
+        $record = $this->verificationCodeRepository->createResetCode($user->id);
+
+        Mail::to($user->email)->queue(
+            new ResetPasswordMail($record->code, VerificationCodeRepository::CODE_EXPIRY_MINUTES)
+        );
+
+        return response()->json(['message' => 'Reset code sent to your email'], 200);
     }
 
     // =========================================================================
@@ -268,19 +257,8 @@ class AuthController extends Controller
      */
     public function resetPassword(Request $request): JsonResponse
     {
-        // 1. Validate incoming data
-        $request->validate([
-            'email'    => 'required|string|email',
-            'code'     => 'required|string',
-            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()->symbols()],
-        ]);
-
-        // 2. Map to request DTO
-        $requestDTO = new ResetPasswordRequestDTO(
-            $request->email,
-            $request->code,
-            $request->password,
-        );
+        // 1. Validate and map to DTO
+        $requestDTO = ResetPasswordRequestDTO::fromRequest($request);
 
         // 3. Look up the user
         $user = $this->userRepository->findByEmail($requestDTO->email);
