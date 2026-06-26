@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\Interfaces\IAgendaRepository;
+use App\Repositories\Eloquent\AgendaRepository;
+use App\Services\Interfaces\IAgendaService;
+use App\Services\AgendaService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +33,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Services\Interfaces\ICategoryService::class,
             \App\Services\Implements\CategoryService::class
+        );
+        $this->app->bind(
+            IAgendaRepository::class,
+            AgendaRepository::class
+        );
+        $this->app->bind(
+            IAgendaService::class,
+            AgendaService::class
         );
 
         $this->app->bind(
