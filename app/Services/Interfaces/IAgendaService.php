@@ -12,7 +12,7 @@ interface IAgendaService
 
     public function getUserAgendas(int $userId): Collection;
 
-    public function getAgenda(int $id): Agenda;
+    public function getAgenda(int $id): ?Agenda;
 
-    public function cancelAgenda(int $id, int $requestingUserId): bool;
+    public function cancelAgenda(int $id, int $userId): bool;
 }

@@ -1,38 +1,30 @@
 services:
-  mysql:
-    image: mysql:8.4
-    container_name: sans-inc-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: sansIncDB
-      MYSQL_USER: sans_user
-      MYSQL_PASSWORD: sans_password
-      MYSQL_ROOT_PASSWORD: root_password
-    ports:
-      - "3307:3306"
+  app:
+    build:
+      context: .
+      dockerfile: docker/docker/Dockerfile
+    working_dir: /var/www/html
     volumes:
-      - sans_inc_mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "sans_user", "-psans_password"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  phpmyadmin:
-    image: phpmyadmin:5
-    container_name: sans-inc-phpmyadmin
-    restart: unless-stopped
+      - .:/var/www/html
     depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: sans_user
-      PMA_PASSWORD: sans_password
-      UPLOAD_LIMIT: 64M
+      - db
+  web:
+    image: nginx:alpine
     ports:
-      - "8081:80"
-
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: sans_inc_pagina_web
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - dbdata:/var/lib/mysql
 volumes:
-  sans_inc_mysql_data:
+  dbdata:
