@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\DTOs\AgendaCreateDto;
 use App\Http\Requests\StoreAgendaRequest;
 use App\Services\Interfaces\IAgendaService;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class AgendaController extends Controller
 {
@@ -15,32 +14,25 @@ class AgendaController extends Controller
         private readonly IAgendaService $agendaService,
     ) {}
 
-    public function index(Request $request): View
+    public function index(Request $request): JsonResponse
     {
         $agendas = $this->agendaService->getUserAgendas($request->user()->id);
 
-        return view('agendas.index', compact('agendas'));
+        return response()->json($agendas);
     }
 
-    public function create(): View
-    {
-        return view('agendas.create');
-    }
-
-    public function store(StoreAgendaRequest $request): RedirectResponse
+    public function store(StoreAgendaRequest $request): JsonResponse
     {
         $dto = AgendaCreateDto::fromRequest($request->user()->id, $request->validated());
-        $this->agendaService->createAgenda($dto);
+        $agenda = $this->agendaService->createAgenda($dto);
 
-        return redirect()->route('agenda.index')
-            ->with('success', 'Agenda registrada correctamente.');
+        return response()->json($agenda, 201);
     }
 
-    public function destroy(Request $request, int $id): RedirectResponse
+    public function destroy(Request $request, int $id): JsonResponse
     {
         $this->agendaService->cancelAgenda($id, $request->user()->id);
 
-        return redirect()->route('agenda.index')
-            ->with('success', 'Agenda cancelada correctamente.');
+        return response()->json(['message' => 'Agenda cancelada correctamente.']);
     }
 }
