@@ -7,7 +7,7 @@ Sans Inc. es una plataforma web desarrollada en equipo con Laravel. El proyecto 
 - **Backend:** PHP 8.1+, Laravel 10
 - **Frontend:** HTML5, CSS3, JavaScript, Bootstrap, Blade
 - **Base de datos:** MySQL
-- **Herramientas:** Composer, Node.js, npm, Vite, Git
+- **Herramientas:** Composer, Node.js, npm, Vite, Git, Docker
 
 ## Estructura del proyecto
 
@@ -34,6 +34,7 @@ sans-inc-pagina-web/
 |   +-- css/             # Frontend: estilos
 |   +-- js/              # Frontend: JavaScript
 +-- public/              # Frontend publico: index.php, imagenes, favicon y assets compilados
++-- docker/              # Configuracion de Docker (Nginx, Dockerfile)
 +-- composer.json        # Dependencias PHP
 +-- package.json         # Dependencias frontend
 +-- .env.example         # Plantilla de configuracion local
@@ -57,8 +58,9 @@ Asegurate de tener instalados los siguientes programas antes de comenzar:
 - Node.js y npm
 - MySQL
 - Git
+- Docker Desktop (recomendado)
 
-Para Windows se recomienda usar [Laragon](https://laragon.org/download/) como servidor local, ya que facilita el uso de PHP y MySQL.
+Para Windows se recomienda usar [Laragon](https://laragon.org/download/) como servidor local si no usas Docker.
 
 **Gestores de paquetes y control de versiones:**
 - [Composer](https://getcomposer.org/) (Obligatorio para descargar dependencias de Laravel)
@@ -66,7 +68,50 @@ Para Windows se recomienda usar [Laragon](https://laragon.org/download/) como se
 
 Tambien se recomienda usar PhpStorm o Visual Studio Code como entorno de desarrollo.
 
-## Guia de instalacion
+## Instalacion con Docker (recomendado)
+
+El proyecto incluye una configuracion Docker lista para usar. Asegurate de tener instalado [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/SebastianGalvez02/sans-inc-pagina-web.git
+cd sans-inc-pagina-web
+```
+
+### 2. Configurar variables de entorno
+
+```bash
+cp .env.example .env
+```
+
+Ajusta estos valores en el `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=sans_inc_pagina_web
+DB_USERNAME=root
+DB_PASSWORD=root
+```
+
+### 3. Levantar los contenedores
+
+```bash
+docker compose up -d
+```
+
+### 4. Generar clave y migrar
+
+```bash
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate
+```
+
+La aplicacion queda disponible en `http://localhost:8000`.
+
+## Instalacion sin Docker (Laragon / XAMPP)
 
 ### 1. Clonar el repositorio
 
@@ -83,8 +128,6 @@ npm install
 ```
 
 ### 3. Configurar variables de entorno
-
-Copia el archivo de ejemplo:
 
 ```bash
 cp .env.example .env
@@ -112,7 +155,7 @@ Crea una base de datos local:
 CREATE DATABASE sans_inc_pagina_web;
 ```
 
-Luego revisa tu archivo `.env` y ajusta estos valores segun tu configuracion local:
+Ajusta el `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -129,12 +172,6 @@ Si usas Laragon y tu usuario `root` no tiene contrasena, deja `DB_PASSWORD=` vac
 
 ```bash
 php artisan migrate
-```
-
-Si existen seeders preparados para datos de prueba, puedes usar:
-
-```bash
-php artisan migrate --seed
 ```
 
 ## Ejecucion del proyecto
