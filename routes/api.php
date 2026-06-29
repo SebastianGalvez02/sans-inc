@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AgendaController;
 
 
 /*
@@ -36,3 +37,9 @@ Route::get('/categories/{id}', [CategoryController::class, 'show']);
 Route::put('/categories/{id}', [CategoryController::class, 'update']);
 Route::patch('/categories/{id}', [CategoryController::class, 'update']);
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
+Route::middleware(['auth.jwt', 'client'])->group(function () {
+    Route::get('/agenda', [AgendaController::class, 'index']);
+    Route::post('/agenda', [AgendaController::class, 'store']);
+    Route::delete('/agenda/{id}', [AgendaController::class, 'destroy']);
+});

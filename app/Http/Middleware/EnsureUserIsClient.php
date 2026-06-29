@@ -10,8 +10,10 @@ class EnsureUserIsClient
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role !== 'client') {
-            abort(403, 'Acceso restringido a clientes.');
+        $user = $request->user();
+
+        if (!$user || !$user->role || $user->role->role_name !== 'client') {
+            return response()->json(['message' => 'Acceso restringido a clientes.'], 403);
         }
 
         return $next($request);
