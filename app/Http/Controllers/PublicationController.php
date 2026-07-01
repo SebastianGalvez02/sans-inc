@@ -32,6 +32,10 @@ public function index(Request $request): JsonResponse
     $productId  = isset($validated['productId'])  ? (int) $validated['productId']  : null;
     $categoryId = isset($validated['categoryId']) ? (int) $validated['categoryId'] : null;
 
+    if ($productId !== null && $categoryId !== null) {
+        return response()->json(['error' => 'No puedes filtrar por productId y categoryId al mismo tiempo.'], 422);
+    }
+
     $publications = $this->publicationService->listPublications($productId, $categoryId);
     return response()->json($publications);
 }
