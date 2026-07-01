@@ -31,11 +31,15 @@ class PublicationService implements IPublicationService
      * el listado general de las publicaciones activas
      * Esta funcion servira para la rf10
      */
-    public function listPublications(?int $productId = null): Collection
+    public function listPublications(?int $productId = null, ?int $categoryId = null): Collection
     {
-        $publications = $productId 
-            ? $this->publicationRepository->getByProductId($productId)
-            : $this->publicationRepository->getAllActive();
+        if ($productId !== null) {
+            $publications = $this->publicationRepository->getByProductId($productId);
+        } elseif ($categoryId !== null) {
+            $publications = $this->publicationRepository->getByCategoryId($categoryId);
+        } else {
+            $publications = $this->publicationRepository->getAllActive();
+        }
 
         return $publications->map(fn($pub) => PublicationResponseDto::fromModel($pub));
     }
