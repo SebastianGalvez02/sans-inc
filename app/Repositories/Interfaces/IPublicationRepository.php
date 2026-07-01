@@ -10,6 +10,8 @@ interface IPublicationRepository
     
     public function getByProductId(int $productId);
 
+    public function getByCategoryId(int $categoryId);
+
     public function getByUserId(int $userId);
     
     public function create(array $data);

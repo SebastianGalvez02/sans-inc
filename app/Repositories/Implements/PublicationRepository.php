@@ -36,7 +36,17 @@ class PublicationRepository implements IPublicationRepository
     }
 
     /**
-     * Funcion que retorna las publicaciones activas asociadas a un usuario 
+     * Funcion que retorna las publicaciones activas cuyo producto pertenece a una categoría
+     */
+    public function getByCategoryId(int $categoryId)
+    {
+        return Publication::whereHas('product', fn($q) => $q->where('categoryId', $categoryId))
+            ->where('active', true)
+            ->get();
+    }
+
+    /**
+     * Funcion que retorna las publicaciones activas asociadas a un usuario
      */
     public function getByUserId(int $userId)
     {
