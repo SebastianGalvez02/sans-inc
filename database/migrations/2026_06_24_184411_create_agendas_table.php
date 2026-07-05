@@ -6,38 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('agendas', function (Blueprint $table) {
-
             $table->id();
-
-            $table->foreignId('user_id')
-                ->constrained()
-                ->restrictOnDelete();
-
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('reason');
-
             $table->dateTime('scheduled_date');
-
             $table->string('phone');
-
-            $table->boolean('active')
-                ->default(true);
-
+            $table->boolean('active')->default(true);
             $table->timestamps();
-
             $table->softDeletes();
-
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('agendas');

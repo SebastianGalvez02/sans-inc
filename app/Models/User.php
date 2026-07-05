@@ -69,4 +69,12 @@ class User extends Authenticatable implements JWTSubject
             'role_id' => $this->role_id,
         ];
     }
+
+    /**
+     * Relationship: a user belongs to one role (client, admin, etc).
+     */
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
 }
