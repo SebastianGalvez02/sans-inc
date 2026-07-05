@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicationController;
+use App\Http\Controllers\AgendaController;
 
 
 /*
@@ -72,4 +73,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/publications/{id}', [PublicationController::class, 'update']);
     Route::patch('/publications/{id}', [PublicationController::class, 'update']);
     Route::delete('/publications/{id}', [PublicationController::class, 'destroy']);
+});
+
+Route::middleware(['auth.jwt', 'client'])->group(function () {
+    Route::get('/agenda', [AgendaController::class, 'index']);
+    Route::post('/agenda', [AgendaController::class, 'store']);
+    Route::delete('/agenda/{id}', [AgendaController::class, 'destroy']);
 });
