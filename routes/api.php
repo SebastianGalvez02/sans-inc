@@ -68,7 +68,7 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
 Route::get('/publications', [PublicationController::class, 'index']);
 Route::get('/publications/{id}', [PublicationController::class, 'show']);
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth.jwt')->group(function () {
     Route::post('/publications', [PublicationController::class, 'store']);
     Route::put('/publications/{id}', [PublicationController::class, 'update']);
     Route::patch('/publications/{id}', [PublicationController::class, 'update']);
