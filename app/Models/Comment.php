@@ -14,24 +14,18 @@ class Comment extends Model
      */
     protected $fillable = [
         'content',
-        'user_id',
-        'publication_id',
+        'userId',
+        'publicationId',
     ];
 
-    /**
-     * Get the user that owns the comment.
-     */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'userId', 'id');
     }
 
-    /**
-     * Get the publication that the comment belongs to.
-     */
     public function publication()
     {
-        return $this->belongsTo(Publication::class);
+        return $this->belongsTo(Publication::class, 'publicationId', 'publicationId');
     }
 }
 

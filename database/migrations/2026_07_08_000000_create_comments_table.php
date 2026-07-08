@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->text('content');
-            $table->foreignId('user_id')
-                ->constrained()
-                ->onDelete('cascade');
-            $table->foreignId('publication_id')
-                ->constrained()
-                ->onDelete('cascade');
+            $table->unsignedBigInteger('userId');
+            $table->unsignedBigInteger('publicationId');
+            $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('publicationId')->references('publicationId')->on('publications')->onDelete('cascade');
             $table->timestamps();
         });
     }
