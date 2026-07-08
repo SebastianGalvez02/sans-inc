@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Agenda extends Model
@@ -19,10 +20,10 @@ class Agenda extends Model
 
     protected $casts = [
         'scheduled_date' => 'datetime',
-        'active' => 'boolean',
+        'active'         => 'boolean',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

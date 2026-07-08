@@ -1,38 +1,41 @@
 services:
-  mysql:
-    image: mysql:8.4
-    container_name: sans-inc-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: sansIncDB
-      MYSQL_USER: sans_user
-      MYSQL_PASSWORD: sans_password
-      MYSQL_ROOT_PASSWORD: root_password
-    ports:
-      - "3307:3306"
-    volumes:
-      - sans_inc_mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "sans_user", "-psans_password"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    mysql:
+        image: mysql:8.4
+        container_name: sans-inc-mysql
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        ports:
+            - "${MYSQL_HOST_PORT}:3306"
+        volumes:
+            - sans_inc_mysql_data:/var/lib/mysql
+        healthcheck:
+            test:
+              [
+                  "CMD-SHELL",
+                  "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD"
+              ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  phpmyadmin:
-    image: phpmyadmin:5
-    container_name: sans-inc-phpmyadmin
-    restart: unless-stopped
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: sans_user
-      PMA_PASSWORD: sans_password
-      UPLOAD_LIMIT: 64M
-    ports:
-      - "8081:80"
-
+    phpmyadmin:
+        image: phpmyadmin:5
+        container_name: sans-inc-phpmyadmin
+        restart: unless-stopped
+        depends_on:
+            mysql:
+                condition: service_healthy
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            PMA_USER: ${MYSQL_USER}
+            PMA_PASSWORD: ${MYSQL_PASSWORD}
+            UPLOAD_LIMIT: ${PHPMYADMIN_UPLOAD_LIMIT}
+        ports:
+            - "${PHPMYADMIN_HOST_PORT}:80"
 volumes:
-  sans_inc_mysql_data:
+    sans_inc_mysql_data:

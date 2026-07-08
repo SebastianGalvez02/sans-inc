@@ -42,6 +42,16 @@ class AppServiceProvider extends ServiceProvider
             IAgendaService::class,
             AgendaService::class
         );
+
+        $this->app->bind(
+            \App\Repositories\Interfaces\IPublicationRepository::class,
+            \App\Repositories\Implements\PublicationRepository::class
+        );
+
+        $this->app->bind(
+            \App\Services\Interfaces\IPublicationService::class,
+            \App\Services\Implements\PublicationService::class
+        );
     }
 
     /**

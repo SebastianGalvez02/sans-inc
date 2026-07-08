@@ -71,10 +71,10 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Get all comments written by the user.
+     * Relationship: a user belongs to one role (client, admin, etc).
      */
-    public function comments()
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasMany(Comment::class);
+        return $this->belongsTo(Role::class);
     }
 }
