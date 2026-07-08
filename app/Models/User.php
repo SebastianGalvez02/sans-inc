@@ -69,4 +69,12 @@ class User extends Authenticatable implements JWTSubject
             'role_id' => $this->role_id,
         ];
     }
+
+    /**
+     * Get all comments written by the user.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
