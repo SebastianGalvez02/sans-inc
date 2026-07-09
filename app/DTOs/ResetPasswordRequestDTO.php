@@ -22,10 +22,11 @@ class ResetPasswordRequestDTO
 
         $request->validate([
             'email'    => 'required|string|email|max:100',
-            'code'     => 'required|string|digits:6',
+            'code'     => 'required|string',
             'password' => $rules,
         ]);
 
         return new self($request->email, $request->code, $request->password);
     }
+    
 }
