@@ -4,16 +4,16 @@ services:
         container_name: sans-inc-mysql
         restart: unless-stopped
         environment:
-            MYSQL_DATABASE: sansIncDB
-            MYSQL_USER: sans_user
-            MYSQL_PASSWORD: sans_password
-            MYSQL_ROOT_PASSWORD: root_password
+            MYSQL_DATABASE: sans_inc_pagina_web
+            MYSQL_USER: user
+            MYSQL_PASSWORD: pass
+            MYSQL_ROOT_PASSWORD: slatan1020
         ports:
             - "3307:3306"
         volumes:
             - sans_inc_mysql_data:/var/lib/mysql
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "sans_user", "-psans_password"]
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "-ppass"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -28,8 +28,8 @@ services:
         environment:
             PMA_HOST: mysql
             PMA_PORT: 3306
-            PMA_USER: sans_user
-            PMA_PASSWORD: sans_password
+            PMA_USER: user
+            PMA_PASSWORD: pass
             UPLOAD_LIMIT: 64M
         ports:
             - "8081:80"
