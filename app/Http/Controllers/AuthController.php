@@ -233,7 +233,9 @@ class AuthController extends Controller
         $user = $this->userRepository->findByEmail($requestDTO->email);
 
         if (!$user) {
-            return response()->json(['message' => 'No account found with that email'], 404);
+            return response()->json([
+                'message' => 'If that email is registered, a reset code has been sent'
+            ], 200);
         }
 
         // 3. Generate reset code and dispatch email to the queue
@@ -243,7 +245,9 @@ class AuthController extends Controller
             new ResetPasswordMail($record->code, VerificationCodeRepository::CODE_EXPIRY_MINUTES)
         );
 
-        return response()->json(['message' => 'Reset code sent to your email'], 200);
+        return response()->json([
+            'message' => 'If that email is registered, a reset code has been sent'
+        ], 200);
     }
 
     // =========================================================================
