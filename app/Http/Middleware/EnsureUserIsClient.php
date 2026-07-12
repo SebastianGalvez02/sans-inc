@@ -20,6 +20,7 @@ class EnsureUserIsClient
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
+        $user->load('role'); // Eager load the role relationship to avoid N+1 queries
 
         if (!$user || !$user->role || $user->role->role_name !== 'client') {
             return response()->json(['message' => 'Acceso restringido a clientes.'], 403);
