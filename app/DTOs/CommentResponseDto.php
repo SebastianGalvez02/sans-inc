@@ -13,7 +13,7 @@ class CommentResponseDto implements Arrayable, JsonSerializable
         public readonly string $content,
         public readonly int $userId,
         public readonly int $publicationId,
-        public readonly string $createdAt,
+        public readonly string $createdAt
     ) {
     }
 
@@ -24,7 +24,7 @@ class CommentResponseDto implements Arrayable, JsonSerializable
             content: (string) $comment->content,
             userId: (int) $comment->userId,
             publicationId: (int) $comment->publicationId,
-            createdAt: $comment->created_at ? $comment->created_at->toIso8601String() : '',
+            createdAt: $comment->created_at ? $comment->created_at->toIso8601String() : ''
         );
     }
 
