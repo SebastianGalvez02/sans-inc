@@ -196,22 +196,13 @@
         <button class="panel-close" onclick="cerrarPanel()">&#x2715;</button>
     </div>
 
-    {{-- Logo provisional centrado --}}
+    {{-- Logo --}}
     <div style="text-align: center; margin-bottom: 0.8rem;">
-        <div style="
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: 80px;
-                height: 80px;
-                background-color: #1b2437;
-                border-radius: 16px;
-                font-size: 2rem;
-                font-weight: 900;
-                color: #ffffff;
-                font-family: 'Segoe UI', system-ui, sans-serif;
-                letter-spacing: -1px;
-            ">SI</div>
+        <img
+            src="{{ asset('images/LogoSans.jpeg') }}"
+            alt="Logo Sans"
+            style="width: 80px; height: 80px; object-fit: cover; border-radius: 16px;"
+        >
     </div>
 
     <div class="panel-title">Sans Inc</div>
