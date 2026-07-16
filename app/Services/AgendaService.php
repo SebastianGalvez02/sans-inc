@@ -6,8 +6,9 @@ use App\DTOs\AgendaCreateDto;
 use App\Models\Agenda;
 use App\Repositories\Interfaces\IAgendaRepository;
 use App\Services\Interfaces\IAgendaService;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 /**
  * AgendaService
@@ -46,7 +47,8 @@ class AgendaService implements IAgendaService
 
     /**
      * Cancel an agenda.
-     * Throws AuthorizationException if the agenda does not belong to the user.
+     * - Agenda inexistente -> ModelNotFoundException (404).
+     * - Agenda de otro usuario -> ValidationException (422).
      */
     public function cancelAgenda(int $id, int $userId): bool
     {
