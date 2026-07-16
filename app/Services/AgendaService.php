@@ -49,13 +49,17 @@ class AgendaService implements IAgendaService
      * Throws AuthorizationException if the agenda does not belong to the user.
      */
     public function cancelAgenda(int $id, int $userId): bool
-    {
-        $agenda = $this->agendaRepository->findById($id);
+{
+    $agenda = $this->agendaRepository->findById($id);
 
-        if (!$agenda || $agenda->user_id !== $userId) {
-            throw new AuthorizationException('No tienes permiso para cancelar esta agenda.');
-        }
-
-        return $this->agendaRepository->delete($id);
+    if (!$agenda) {
+        abort(404, 'Agenda no encontrada.');
     }
+
+    if ($agenda->user_id !== $userId) {
+        abort(422, 'No tienes permiso para cancelar esta agenda.');
+    }
+
+    return $this->agendaRepository->delete($id);
+}
 }
