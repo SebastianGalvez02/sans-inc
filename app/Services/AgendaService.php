@@ -6,8 +6,9 @@ use App\DTOs\AgendaCreateDto;
 use App\Models\Agenda;
 use App\Repositories\Interfaces\IAgendaRepository;
 use App\Services\Interfaces\IAgendaService;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 /**
  * AgendaService
@@ -46,14 +47,23 @@ class AgendaService implements IAgendaService
 
     /**
      * Cancel an agenda.
-     * Throws AuthorizationException if the agenda does not belong to the user.
+     * - Agenda inexistente -> ModelNotFoundException (Laravel la convierte en 404 automáticamente).
+     * - Agenda de otro usuario -> ValidationException (422), respetando el contrato ya
+     *   definido para este endpoint (no es un tema de "acceso" sino de "operación inválida"
+     *   sobre un recurso que no te pertenece).
      */
     public function cancelAgenda(int $id, int $userId): bool
     {
         $agenda = $this->agendaRepository->findById($id);
 
-        if (!$agenda || $agenda->user_id !== $userId) {
-            throw new AuthorizationException('No tienes permiso para cancelar esta agenda.');
+        if (!$agenda) {
+            throw new ModelNotFoundException('Agenda no encontrada.');
+        }
+
+        if ($agenda->user_id !== $userId) {
+            throw ValidationException::withMessages([
+                'agenda' => ['No tienes permiso para cancelar esta agenda.'],
+            ]);
         }
 
         return $this->agendaRepository->delete($id);
