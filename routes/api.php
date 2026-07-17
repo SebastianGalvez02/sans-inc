@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\CommentController;
 
 
 /*
@@ -79,4 +80,14 @@ Route::middleware(['auth.jwt', 'client'])->group(function () {
     Route::get('/agenda', [AgendaController::class, 'index']);
     Route::post('/agenda', [AgendaController::class, 'store']);
     Route::delete('/agenda/{id}', [AgendaController::class, 'destroy']);
+});
+
+// Comments
+Route::get('/comments', [CommentController::class, 'index']);
+Route::get('/comments/{id}', [CommentController::class, 'show']);
+Route::middleware('auth.jwt')->group(function () {
+    Route::post('/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{id}', [CommentController::class, 'update']);
+    Route::patch('/comments/{id}', [CommentController::class, 'update']);
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
 });
