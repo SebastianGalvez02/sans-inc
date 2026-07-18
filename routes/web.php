@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +18,28 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/publicar', function () {
+    return view('nueva-publicacion');
+});
+
+Route::get('/register', function () {
+    return view('register');
+});
+
+Route::get('/register/verify/{id}/{hash}', function (Request $request, int $id, string $hash) {
+    $user = User::findOrFail($id);
+
+    abort_unless(hash_equals($hash, sha1($user->email)), 403);
+
+    if (!$user->email_verified_at) {
+        $user->forceFill([
+            'email_verified_at' => now(),
+        ])->save();
+    }
+
+    return view('registro-confirmado');
+})->middleware('signed')->name('register.verify');
 
 Route::middleware(['auth', 'client'])->group(function () {
     Route::get('/agenda', [\App\Http\Controllers\AgendaController::class, 'index'])->name('agenda.index');
