@@ -4,13 +4,23 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * StoreAgendaRequest
+ * Validates the incoming request data for creating a new agenda.
+ */
 class StoreAgendaRequest extends FormRequest
 {
+    /**
+     * All authenticated users reaching this point are authorized (role check is in middleware).
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Validation rules for agenda creation.
+     */
     public function rules(): array
     {
         return [
@@ -20,13 +30,16 @@ class StoreAgendaRequest extends FormRequest
         ];
     }
 
+    /**
+     * Custom validation error messages.
+     */
     public function messages(): array
     {
         return [
-            'reason.required'         => 'La razón de contacto es obligatoria.',
+            'reason.required'         => 'La razon de contacto es obligatoria.',
             'scheduled_date.required' => 'La fecha agendada es obligatoria.',
             'scheduled_date.after'    => 'La fecha agendada debe ser futura.',
-            'phone.required'          => 'El teléfono es obligatorio.',
+            'phone.required'          => 'El telefono es obligatorio.',
         ];
     }
 }
