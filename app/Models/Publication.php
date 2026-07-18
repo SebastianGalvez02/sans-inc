@@ -43,10 +43,10 @@ class Publication extends Model
         return $this->belongsTo(Product::class, 'productId', 'productId');
     }
 
-    //  public function comments()
-    //  {
-    //      return $this->hasMany(Comment::class, 'publicationId', 'publicationId');
-    //   }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'publicationId', 'publicationId');
+    }
 
 
 }
