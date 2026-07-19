@@ -13,14 +13,16 @@ class CommentController extends Controller
 	public function index(Request $request): JsonResponse
 	{
 		$validated = $request->validate([
-			'publicationId' => 'nullable|integer|exists:publications,publicationId',
-		]);
+            'publicationId' => 'nullable|integer|exists:publications,publicationId',
+        ]);
+
+		$query = Comment::where('activo', true);
 
 		if (isset($validated['publicationId'])) {
-			$comments = Comment::where('publicationId', (int) $validated['publicationId'])->get();
-		} else {
-			$comments = Comment::all();
-		}
+            $comments = $query->where('publicationId', (int) $validated['publicationId'])->get();
+        } else {
+            $comments = $query->get();
+        }
 
 		return response()->json($comments);
 	}
@@ -28,83 +30,88 @@ class CommentController extends Controller
 	public function show(int $id): JsonResponse
 	{
 		try {
-			$comment = Comment::findOrFail($id);
-			return response()->json($comment);
-		} catch (ModelNotFoundException $e) {
-			return response()->json(['error' => $e->getMessage()], 404);
-		}
+            $comment = Comment::where('activo', true)->findOrFail($id);
+            return response()->json($comment);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Comment not found.'], 404);
+        }
 	}
 
 	public function store(Request $request): JsonResponse
 	{
-		$user = $request->user();
-		if (!$user) {
-			abort(401, 'You must be logged in.');
-		}
+		$user = auth()->user(); 
+    	if (!$user) {
+        	return response()->json(['error' => 'You must be logged in.'], 401);
+    	}
 
 		$validated = $request->validate([
-			'publicationId' => 'required|integer|exists:publications,publicationId',
-			'content' => 'required|string|min:1|max:1000',
-		]);
+        	'publicationId' => 'required|integer|exists:publications,publicationId',
+        	'content' => 'required|string|min:3|max:255',
+    	]);
 
 		$comment = Comment::create([
-			'content' => $validated['content'],
-			'publicationId' => (int) $validated['publicationId'],
-			'userId' => $user->id,
-		]);
-
+        	'comentario' => $validated['content'],
+        	'publicationId' => (int) $validated['publicationId'],
+        	'userId' => $user->id,
+        	'activo' => true,
+    	]);
+	
 		return response()->json($comment, 201);
 	}
 
+	
 	public function update(Request $request, int $id): JsonResponse
 	{
-		$user = $request->user();
-		if (!$user) {
-			abort(401, 'Debes iniciar sesión.');
-		}
+		$user = auth()->user();
+        if (!$user) {
+    		return response()->json(['error' => 'You must be logged in.'], 401);
+    	}
 
 		$validated = $request->validate([
-			'content' => 'required|string|min:1|max:1000',
-		]);
+       		'content' => 'required|string|min:3|max:255',
+    	]);
 
 		try {
-			$comment = Comment::findOrFail($id);
+        $comment = Comment::where('activo', true)->findOrFail($id);
+        if ((int) $comment->userId !== (int) $user->id) {
+            throw new AccessDeniedHttpException('You do not have permission to modify this comment.');
+        }
 
-			if ((int) $comment->userId !== (int) $user->id) {
-				throw new AccessDeniedHttpException('You do not have permission to modify this comment.');
-			}
+        $comment->comentario = $validated['content'];
+        $comment->save();
 
-			$comment->content = $validated['content'];
-			$comment->save();
+        return response()->json($comment);
 
-			return response()->json($comment);
-		} catch (ModelNotFoundException $e) {
-			return response()->json(['error' => $e->getMessage()], 404);
-		} catch (AccessDeniedHttpException $e) {
-			return response()->json(['error' => $e->getMessage()], 403);
-		}
+    	} catch (ModelNotFoundException $e) {
+         	return response()->json(['error' => 'Comment not found.'], 404);
+    	} catch (AccessDeniedHttpException $e) {
+        	return response()->json(['error' => $e->getMessage()], 403);
+    	}
 	}
 
 	public function destroy(Request $request, int $id): JsonResponse
 	{
-		$user = $request->user();
-		if (!$user) {
-			abort(401, 'You must be logged in.');
-		}
+		$user = auth()->user();
+    	if (!$user) {
+        	return response()->json(['error' => 'You must be logged in.'], 401);
+    	}
 
 		try {
-			$comment = Comment::findOrFail($id);
+        $comment = Comment::where('activo', true)->findOrFail($id);
 
-			if ((int) $comment->userId !== (int) $user->id) {
-				throw new AccessDeniedHttpException('You do not have permission to delete this comment.');
-			}
+        if ((int) $comment->userId !== (int) $user->id) {
+            throw new AccessDeniedHttpException('You do not have permission to delete this comment.');
+        }
 
-			$comment->delete();
-			return response()->json(null, 204);
-		} catch (ModelNotFoundException $e) {
-			return response()->json(['error' => $e->getMessage()], 404);
-		} catch (AccessDeniedHttpException $e) {
-			return response()->json(['error' => $e->getMessage()], 403);
-		}
+        $comment->activo = false;
+        $comment->save();
+
+        return response()->json(['message' => 'Comment deleted successfully.'], 200);
+
+    	} catch (ModelNotFoundException $e) {
+        	return response()->json(['error' => 'Comment not found.'], 404);
+    	} catch (AccessDeniedHttpException $e) {
+        	return response()->json(['error' => $e->getMessage()], 403);
+    	}
 	}
 }
