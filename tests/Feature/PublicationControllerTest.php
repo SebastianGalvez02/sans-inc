@@ -29,7 +29,8 @@ class PublicationControllerTest extends TestCase
         float $rating = 4.5,
         string $review = 'Muy buen producto',
         int $numberOfLikes = 0,
-        int $userId = 1
+        int $userId = 1,
+        string $userName = 'Usuario Prueba',
     ): PublicationResponseDto {
         return new PublicationResponseDto(
             publicationId: $publicationId,
@@ -39,6 +40,7 @@ class PublicationControllerTest extends TestCase
             numberOfLikes: $numberOfLikes,
             publicationDate: now()->toIso8601String(),
             userId: $userId,
+            userName: $userName,
         );
     }
 

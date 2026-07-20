@@ -12,7 +12,9 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getAllActive()
     {
-        return Publication::where('active', true)->get();
+        return Publication::with('user')
+            ->where('active', true)
+            ->get();
     }
 
     /**
@@ -20,7 +22,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function findActiveById(int $id)
     {
-        return Publication::where('publicationId', $id)
+        return Publication::with('user')
+            ->where('publicationId', $id)
             ->where('active', true)
             ->first();
     }
@@ -30,7 +33,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByProductId(int $productId)
     {
-        return Publication::where('productId', $productId)
+        return Publication::with('user')
+            ->where('productId', $productId)
             ->where('active', true)
             ->get();
     }
@@ -40,7 +44,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByCategoryId(int $categoryId)
     {
-        return Publication::whereHas('product', fn($q) => $q->where('categoryId', $categoryId))
+        return Publication::with('user')
+            ->whereHas('product', fn($q) => $q->where('categoryId', $categoryId))
             ->where('active', true)
             ->get();
     }
@@ -50,7 +55,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByUserId(int $userId)
     {
-        return Publication::where('userId', $userId)
+        return Publication::with('user')
+            ->where('userId', $userId)
             ->where('active', true)
             ->get();
     }

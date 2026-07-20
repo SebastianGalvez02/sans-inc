@@ -15,9 +15,8 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
         public readonly string $review,
         public readonly int $numberOfLikes,
         public readonly string $publicationDate,
-        // Acá por si quisiéramos en un futuro mostrar el nombre del usuario
         public readonly int $userId,
-        // public readonly string $userName, // Futura relacion con el nombre del usuario
+        public readonly string $userName,
     ) {
     }
 
@@ -32,6 +31,7 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             // Formateamos la fecha a un string seguro (ISO 8601)
             publicationDate: $publication->publicationDate->toIso8601String(),
             userId: (int) $publication->userId,
+            userName: (string) ($publication->user?->name ?? 'usuario'),
         );
     }
 
@@ -45,6 +45,7 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             'numberOfLikes' => $this->numberOfLikes,
             'publicationDate' => $this->publicationDate,
             'userId' => $this->userId,
+            'userName' => $this->userName,
         ];
     }
 
