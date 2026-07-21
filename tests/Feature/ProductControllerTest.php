@@ -8,14 +8,29 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Mockery;
 use Tests\TestCase;
 
+/**
+ * Clase para probar los endpoints HTTP de productos.
+ *
+ * Valida las respuestas JSON del listado, filtro por categoria,
+ * consulta individual y manejo de productos inexistentes o inactivos.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 class ProductControllerTest extends TestCase
 {
+    /**
+     * Cierra los mocks creados durante cada prueba.
+     */
     protected function tearDown(): void
     {
         Mockery::close();
         parent::tearDown();
     }
 
+    /**
+     * Verifica que el endpoint de listado retorne productos en JSON.
+     */
     public function test_get_products_index_endpoint_returns_json_response()
     {
         // Arrange
@@ -65,6 +80,9 @@ class ProductControllerTest extends TestCase
             ]);
     }
 
+    /**
+     * Verifica que el endpoint de listado filtre productos por categoria.
+     */
     public function test_get_products_index_with_category_id_filters_products()
     {
         // Arrange
@@ -100,6 +118,9 @@ class ProductControllerTest extends TestCase
             ]);
     }
 
+    /**
+     * Verifica que el endpoint de detalle retorne un producto en JSON.
+     */
     public function test_get_product_show_endpoint_returns_json_response()
     {
         // Arrange
@@ -132,6 +153,9 @@ class ProductControllerTest extends TestCase
             ]);
     }
 
+    /**
+     * Verifica que el endpoint de detalle retorne 404 si el producto no existe.
+     */
     public function test_get_product_show_returns_404_when_inactive_or_not_found()
     {
         // Arrange

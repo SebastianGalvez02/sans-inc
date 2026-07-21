@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 
 /**
- * ProductSeeder
+ * Clase para cargar productos iniciales.
  *
  * Puebla la tabla 'products' con los productos iniciales del sistema.
  *
@@ -25,6 +25,9 @@ use App\Models\Product;
  *
  * Para ejecutar individualmente:
  *   php artisan db:seed --class=ProductSeeder
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
  */
 class ProductSeeder extends Seeder
 {

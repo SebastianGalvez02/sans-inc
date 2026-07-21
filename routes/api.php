@@ -27,6 +27,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+/**
+ * Rutas para consultar productos activos.
+ *
+ * Expone el listado general, el filtro por categoryId y la consulta
+ * individual de productos mediante ProductController.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 

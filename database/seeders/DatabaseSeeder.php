@@ -7,10 +7,19 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
 
+/**
+ * Clase para ejecutar los seeders principales de la aplicacion.
+ *
+ * Incluye la carga de categorias y productos necesarios para probar
+ * el modulo productos con datos iniciales.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Ejecuta los seeders base de la aplicacion.
      */
     public function run(): void
     {
