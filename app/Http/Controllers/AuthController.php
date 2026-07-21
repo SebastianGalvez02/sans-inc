@@ -7,7 +7,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use App\Mail\ResetPasswordMail;
+use App\Mail\VerifyRegistrationMail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\User;
@@ -74,11 +76,24 @@ class AuthController extends Controller
 
         $savedUser = $this->userRepository->save($user);
 
+        $verificationUrl = URL::temporarySignedRoute(
+            'register.verify',
+            now()->addHours(24),
+            [
+                'id' => $savedUser->id,
+                'hash' => sha1($savedUser->email),
+            ]
+        );
+
+        Mail::to($savedUser->email)->queue(
+            new VerifyRegistrationMail($verificationUrl, $savedUser->name)
+        );
+
         // 5. Return 201 Created with response DTO
         $responseDTO = new RegisterResponseDTO($savedUser);
 
         return response()->json([
-            'message' => 'User successfully registered',
+            'message' => 'User successfully registered. Please check your email to confirm your account',
             'user'    => $responseDTO,
         ], 201);
     }
@@ -112,6 +127,12 @@ class AuthController extends Controller
         $user = $this->userRepository->findByEmail($requestDTO->email);
 
         if ($user) {
+            if (!$user->email_verified_at) {
+                return response()->json([
+                    'message' => 'Please confirm your email before logging in',
+                ], 403);
+            }
+
             // 4. Reject immediately if the account is temporarily locked out
             if ($this->verificationCodeRepository->isLockedOut($user->id)) {
                 $unlocksAt = $this->verificationCodeRepository->lockoutExpiresAt($user->id);
