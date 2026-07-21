@@ -7,12 +7,21 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Clase para procesar peticiones HTTP del modulo productos.
+ *
+ * Gestiona el listado de productos activos, el filtro por categoria
+ * y la consulta individual de productos disponibles para resenas.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 class ProductController extends Controller
 {
     protected IProductService $productService;
 
     /**
-     * ProductController constructor.
+     * Inicializa el controlador con el servicio de productos.
      *
      * @param IProductService $productService
      */
@@ -22,7 +31,10 @@ class ProductController extends Controller
     }
 
     /**
-     * List products (optionally filtered by categoryId).
+     * Realiza el listado de productos activos.
+     *
+     * Si existe el parametro categoryId, devuelve solo productos
+     * activos asociados a esa categoria.
      *
      * @param Request $request
      * @return JsonResponse
@@ -40,7 +52,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Get a single product for review.
+     * Obtiene un producto activo por su identificador.
      *
      * @param int $id
      * @return JsonResponse
