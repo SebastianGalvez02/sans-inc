@@ -221,6 +221,25 @@
             height: 25px;
         }
 
+        .publication-like-button .like-icon {
+            color: #24324d;
+            transition: color 160ms ease, fill 160ms ease;
+        }
+
+        .publication-like-button:hover .like-icon {
+            color: #fb2c36;
+        }
+
+        .publication-like-button.is-liked .like-icon {
+            color: #fb2c36;
+            fill: currentColor;
+        }
+
+        .publication-like-button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
         .empty-feed,
         .feed-error {
             display: none;
@@ -441,6 +460,62 @@
         abrirPanel();
     }
 
+    function apiHeaders() {
+        const headers = { 'Accept': 'application/json' };
+        const token = localStorage.getItem('jwtToken');
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        return headers;
+    }
+
+    function updateLikeButton(button, liked, numberOfLikes) {
+        button.classList.toggle('is-liked', liked);
+        button.setAttribute('aria-pressed', liked ? 'true' : 'false');
+        button.querySelector('[data-like-count]').textContent = numberOfLikes;
+    }
+
+    async function togglePublicationLike(publication, button) {
+        const token = localStorage.getItem('jwtToken');
+
+        if (!token) {
+            showLoginRequired();
+            return;
+        }
+
+        button.disabled = true;
+
+        try {
+            const response = await fetch(`/api/publications/${publication.publicationId}/like`, {
+                method: 'POST',
+                headers: apiHeaders(),
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('sansUser');
+                window.dispatchEvent(new Event('sans-auth-changed'));
+                showLoginRequired();
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('Like request failed');
+            }
+
+            const data = await response.json();
+            publication.likedByCurrentUser = Boolean(data.liked);
+            publication.numberOfLikes = Number(data.numberOfLikes);
+            updateLikeButton(button, publication.likedByCurrentUser, publication.numberOfLikes);
+        } catch (error) {
+            alert('No se pudo actualizar el like. Inténtalo nuevamente.');
+        } finally {
+            button.disabled = false;
+        }
+    }
+
     function renderPublications(publications, productsById) {
         feedList.innerHTML = '';
         emptyFeed.style.display = publications.length ? 'none' : 'block';
@@ -471,11 +546,11 @@
                     <p class="publication-review">${escapeHtml(publication.review)}</p>
 
                     <div class="publication-footer">
-                        <button type="button" class="publication-action" data-like-button>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <button type="button" class="publication-action publication-like-button ${publication.likedByCurrentUser ? 'is-liked' : ''}" data-like-button aria-pressed="${publication.likedByCurrentUser ? 'true' : 'false'}">
+                            <svg class="like-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" />
                             </svg>
-                            <span>${escapeHtml(publication.numberOfLikes)}</span>
+                            <span data-like-count>${escapeHtml(publication.numberOfLikes)}</span>
                         </button>
 
                         <button type="button" class="publication-action">
@@ -488,12 +563,8 @@
                 </div>
             `;
 
-            card.querySelector('[data-like-button]').addEventListener('click', () => {
-                if (!localStorage.getItem('jwtToken')) {
-                    showLoginRequired();
-                    return;
-                }
-            });
+            const likeButton = card.querySelector('[data-like-button]');
+            likeButton.addEventListener('click', () => togglePublicationLike(publication, likeButton));
 
             feedList.appendChild(card);
         });
@@ -502,8 +573,8 @@
     async function loadPublications() {
         try {
             const [publicationsResponse, productsResponse] = await Promise.all([
-                fetch('/api/publications', { headers: { 'Accept': 'application/json' } }),
-                fetch('/api/products', { headers: { 'Accept': 'application/json' } }),
+                fetch('/api/publications', { headers: apiHeaders() }),
+                fetch('/api/products', { headers: apiHeaders() }),
             ]);
 
             if (!publicationsResponse.ok) {
@@ -541,6 +612,14 @@
         if (event.target === loginRequiredModal) {
             loginRequiredModal.classList.remove('is-open');
         }
+    });
+
+    window.addEventListener('sans-auth-changed', () => {
+        if (localStorage.getItem('jwtToken')) {
+            loginRequiredModal.classList.remove('is-open');
+        }
+
+        loadPublications();
     });
 
     loadPublications();

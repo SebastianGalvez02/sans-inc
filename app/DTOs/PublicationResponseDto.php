@@ -17,6 +17,7 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
         public readonly string $publicationDate,
         public readonly int $userId,
         public readonly string $userName,
+        public readonly bool $likedByCurrentUser = false,
     ) {
     }
 
@@ -32,6 +33,8 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             publicationDate: $publication->publicationDate->toIso8601String(),
             userId: (int) $publication->userId,
             userName: (string) ($publication->user?->name ?? 'usuario'),
+            likedByCurrentUser: $publication->relationLoaded('likes')
+                && $publication->likes->isNotEmpty(),
         );
     }
 
@@ -46,6 +49,7 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             'publicationDate' => $this->publicationDate,
             'userId' => $this->userId,
             'userName' => $this->userName,
+            'likedByCurrentUser' => $this->likedByCurrentUser,
         ];
     }
 
