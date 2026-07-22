@@ -48,5 +48,9 @@ class Publication extends Model
         return $this->hasMany(Comment::class, 'publicationId', 'publicationId');
     }
 
+    public function likes()
+    {
+        return $this->hasMany(PublicationLike::class, 'publicationId', 'publicationId');
+    }
 
 }

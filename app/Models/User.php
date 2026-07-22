@@ -89,4 +89,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Comment::class, 'userId', 'id');
     }
+
+    public function publicationLikes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PublicationLike::class, 'userId', 'id');
+    }
 }

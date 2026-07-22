@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\DTOs\PublicationRequestDto;
 use App\Models\Role;
+use App\Models\Publication;
+use App\Models\PublicationLike;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -119,6 +122,44 @@ public function store(Request $request): JsonResponse
          return response()->json(['error' => $e->getMessage()], 404);
      } catch (AccessDeniedHttpException $e) {
          return response()->json(['error' => $e->getMessage()], 403);
+     }
+ }
+
+ public function toggleLike(Request $request, int $id): JsonResponse
+ {
+     try {
+         $result = DB::transaction(function () use ($request, $id): array {
+             $publication = Publication::where('publicationId', $id)
+                 ->where('active', true)
+                 ->lockForUpdate()
+                 ->firstOrFail();
+
+             $like = PublicationLike::where('publicationId', $publication->publicationId)
+                 ->where('userId', $request->user()->id)
+                 ->first();
+
+             if ($like) {
+                 $like->delete();
+                 $publication->decrement('numberOfLikes');
+                 $liked = false;
+             } else {
+                 PublicationLike::create([
+                     'publicationId' => $publication->publicationId,
+                     'userId' => $request->user()->id,
+                 ]);
+                 $publication->increment('numberOfLikes');
+                 $liked = true;
+             }
+
+             return [
+                 'liked' => $liked,
+                 'numberOfLikes' => (int) $publication->fresh()->numberOfLikes,
+             ];
+         });
+
+         return response()->json($result);
+     } catch (ModelNotFoundException) {
+         return response()->json(['error' => 'Publicación no encontrada o inactiva.'], 404);
      }
  }
 

@@ -4,6 +4,7 @@ namespace App\Repositories\Implements;
 
 use App\Models\Publication;
 use App\Repositories\Interfaces\IPublicationRepository;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class PublicationRepository implements IPublicationRepository
 {
@@ -12,7 +13,9 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getAllActive()
     {
-        return Publication::where('active', true)->get();
+        return $this->withViewerLike(Publication::with('user'))
+            ->where('active', true)
+            ->get();
     }
 
     /**
@@ -20,7 +23,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function findActiveById(int $id)
     {
-        return Publication::where('publicationId', $id)
+        return $this->withViewerLike(Publication::with('user'))
+            ->where('publicationId', $id)
             ->where('active', true)
             ->first();
     }
@@ -30,7 +34,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByProductId(int $productId)
     {
-        return Publication::where('productId', $productId)
+        return $this->withViewerLike(Publication::with('user'))
+            ->where('productId', $productId)
             ->where('active', true)
             ->get();
     }
@@ -40,7 +45,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByCategoryId(int $categoryId)
     {
-        return Publication::whereHas('product', fn($q) => $q->where('categoryId', $categoryId))
+        return $this->withViewerLike(Publication::with('user'))
+            ->whereHas('product', fn($q) => $q->where('categoryId', $categoryId))
             ->where('active', true)
             ->get();
     }
@@ -50,7 +56,8 @@ class PublicationRepository implements IPublicationRepository
      */
     public function getByUserId(int $userId)
     {
-        return Publication::where('userId', $userId)
+        return $this->withViewerLike(Publication::with('user'))
+            ->where('userId', $userId)
             ->where('active', true)
             ->get();
     }
@@ -73,5 +80,25 @@ class PublicationRepository implements IPublicationRepository
         $publication = Publication::findOrFail($id);
         $publication->update($data);
         return $publication;
+    }
+
+    private function withViewerLike($query)
+    {
+        try {
+            $userId = auth('api')->id();
+        } catch (JWTException) {
+            $userId = null;
+        }
+
+        return $query->with([
+            'likes' => function ($likesQuery) use ($userId) {
+                if ($userId === null) {
+                    $likesQuery->whereRaw('0 = 1');
+                    return;
+                }
+
+                $likesQuery->where('userId', $userId);
+            },
+        ]);
     }
 }
