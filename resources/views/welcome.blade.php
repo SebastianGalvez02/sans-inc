@@ -6,11 +6,24 @@
     <title>Sans Inc</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
+    html,
+    body {
+        min-height: 100%;
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        background-color: #f0f0f0;
+    }
+
+    .sans-page-content {
+        width: 100%;
+        flex: 1;
+    }
     </style>
 </head>
 <body>
@@ -29,7 +42,11 @@
     </form>
 </x-login-panel>
 
-{{-- Contenido de la página va aquí --}}
+<main class="sans-page-content">
+    {{-- Contenido principal de la página --}}
+</main>
+
+<x-footer />
 
 </body>
 </html>

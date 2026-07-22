@@ -13,12 +13,15 @@
         body {
             margin: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             background: #e5e5e5;
             color: #111827;
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         .agenda-page {
+            flex: 1;
             display: flex;
             justify-content: center;
             padding: 2.5rem 1rem;
@@ -382,6 +385,8 @@
         </form>
     </section>
 </main>
+
+<x-footer />
 
 <script>
     const agendaForm = document.getElementById('agendaForm');

@@ -13,12 +13,15 @@
         body {
             margin: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             background: #e5e5e5;
             color: #111827;
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         .confirmed-page {
+            flex: 1;
             display: flex;
             justify-content: center;
             padding: 4rem 1rem;
@@ -80,6 +83,8 @@
         <a href="/">Volver al inicio</a>
     </section>
 </main>
+
+<x-footer />
 
 </body>
 </html>
