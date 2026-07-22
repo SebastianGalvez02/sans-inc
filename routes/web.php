@@ -27,6 +27,10 @@ Route::get('/register', function () {
     return view('register');
 });
 
+Route::get('/recuperar', function () {
+    return view('recuperar');
+});
+
 Route::get('/register/verify/{id}/{hash}', function (Request $request, int $id, string $hash) {
     $user = User::findOrFail($id);
 
