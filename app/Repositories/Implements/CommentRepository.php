@@ -12,7 +12,7 @@ class CommentRepository implements ICommentRepository
      */
     public function getAll()
     {
-        return Comment::all();
+        return Comment::where('activo', true)->get();
     }
 
     /**
@@ -20,7 +20,7 @@ class CommentRepository implements ICommentRepository
      */
     public function findById(int $id)
     {
-        return Comment::find($id);
+        return Comment::where('activo', true)->find($id);
     }
 
     /**
@@ -29,6 +29,7 @@ class CommentRepository implements ICommentRepository
     public function getByPublicationId(int $publicationId)
     {
         return Comment::where('publicationId', $publicationId)
+            ->where('activo', true)
             ->get();
     }
 
@@ -38,6 +39,7 @@ class CommentRepository implements ICommentRepository
     public function getByUserId(int $userId)
     {
         return Comment::where('userId', $userId)
+            ->where('activo', true)
             ->get();
     }
 
@@ -54,7 +56,7 @@ class CommentRepository implements ICommentRepository
      */
     public function update(int $id, array $data)
     {
-        $comment = Comment::findOrFail($id);
+        $comment = Comment::where('activo', true)->findOrFail($id);
         $comment->update($data);
         return $comment;
     }
@@ -64,7 +66,10 @@ class CommentRepository implements ICommentRepository
      */
     public function delete(int $id)
     {
-        $comment = Comment::findOrFail($id);
-        return $comment->delete();
+        $comment = Comment::where('activo', true)->findOrFail($id);
+        $comment->activo = false;
+        $comment->save();
+
+        return $comment;
     }
 }
