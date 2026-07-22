@@ -11,14 +11,29 @@ use Illuminate\Support\Collection;
 use Mockery;
 use Tests\TestCase;
 
+/**
+ * Clase para probar la logica de negocio de productos.
+ *
+ * Valida que ProductService consulte el repositorio correcto y convierta
+ * los modelos Product en ProductResponseDto.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 class ProductServiceTest extends TestCase
 {
+    /**
+     * Cierra los mocks creados durante cada prueba.
+     */
     protected function tearDown(): void
     {
         Mockery::close();
         parent::tearDown();
     }
 
+    /**
+     * Verifica que el servicio liste productos activos como DTOs.
+     */
     public function test_list_available_products_returns_mapped_dtos()
     {
         // Arrange
@@ -62,6 +77,9 @@ class ProductServiceTest extends TestCase
         $this->assertTrue($result->first()->active);
     }
 
+    /**
+     * Verifica que el servicio obtenga un producto activo como DTO.
+     */
     public function test_get_product_for_review_returns_mapped_dto_when_found()
     {
         // Arrange
@@ -94,6 +112,9 @@ class ProductServiceTest extends TestCase
         $this->assertTrue($result->active);
     }
 
+    /**
+     * Verifica que el servicio lance excepcion cuando el producto no existe.
+     */
     public function test_get_product_for_review_throws_exception_when_not_found_or_inactive()
     {
         // Arrange
@@ -113,6 +134,9 @@ class ProductServiceTest extends TestCase
         $service->getProductForReview(99);
     }
 
+    /**
+     * Verifica que el servicio liste productos activos por categoria.
+     */
     public function test_list_products_by_category_returns_mapped_dtos()
     {
         // Arrange

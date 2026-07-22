@@ -6,7 +6,9 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\VerificationCode;
+use App\Mail\VerifyRegistrationMail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * AuthTest
@@ -47,6 +49,7 @@ class AuthTest extends TestCase
         $user = User::create([
             'name'     => 'Alice',
             'email'    => 'alice@example.com',
+            'email_verified_at' => now(),
             'password' => bcrypt($plainPassword),
             'role_id'  => $role->id,
         ]);
@@ -77,6 +80,8 @@ class AuthTest extends TestCase
      */
     public function test_register_creates_user_successfully(): void
     {
+        Mail::fake();
+
         $role = Role::create([
             'role_name'   => 'Editor',
             'description' => 'Content editor',
@@ -90,11 +95,13 @@ class AuthTest extends TestCase
             'password_confirmation' => 'Secret1!',
         ])
         ->assertStatus(201)
-        ->assertJsonFragment(['message' => 'User successfully registered'])
+        ->assertJsonFragment(['message' => 'User successfully registered. Please check your email to confirm your account'])
         ->assertJsonStructure([
             'message',
             'user' => ['id', 'name', 'email', 'registered_at'],
         ]);
+
+        Mail::assertQueued(VerifyRegistrationMail::class);
     }
 
     /**

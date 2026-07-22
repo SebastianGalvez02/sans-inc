@@ -5,17 +5,26 @@ namespace App\Services\Interfaces;
 use App\DTOs\ProductResponseDto;
 use Illuminate\Support\Collection;
 
+/**
+ * Interfaz para definir operaciones de negocio de productos.
+ *
+ * Establece el contrato que debe cumplir el servicio encargado de
+ * preparar productos activos para las respuestas de la API.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 interface IProductService
 {
     /**
-     * List all available (active) products.
+     * Realiza el listado de productos disponibles.
      *
      * @return Collection<int, ProductResponseDto>
      */
     public function listAvailableProducts(): Collection;
 
     /**
-     * Get an active product for review.
+     * Obtiene un producto activo para resenia.
      *
      * @param int $id
      * @return ProductResponseDto
@@ -24,7 +33,7 @@ interface IProductService
     public function getProductForReview(int $id): ProductResponseDto;
 
     /**
-     * List active products by category ID.
+     * Realiza el listado de productos activos por categoria.
      *
      * @param int $categoryId
      * @return Collection<int, ProductResponseDto>
