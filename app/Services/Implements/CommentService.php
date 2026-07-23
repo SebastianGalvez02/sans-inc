@@ -1,46 +1,82 @@
 <?php
 
-use App\Services\Interfaces\ICategoryService;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Gate;
-use app\Models\Comment;
-use app\Repositories\Interfaces\ICommentRepository;
+namespace App\Services\Implements;
 
-class CommentService implements ICommentService{
+use App\DTOs\CommentRequestDto;
+use App\DTOs\CommentResponseDto;
+use App\Models\Comment;
+use App\Repositories\Interfaces\ICommentRepository;
+use App\Services\Interfaces\ICommentService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-    public function create(\App\DTOs\CommentRequestDto $commentRequest)
+class CommentService implements ICommentService
+{
+    public function __construct(
+        protected ICommentRepository $commentRepository
+    ) {}
+
+    public function listComments(?int $publicationId = null): Collection
     {
-        return Comment::create([
-            'content'       => $commentRequest->content,
-            'userId'        => $commentRequest->userId,
+        $comments = $publicationId === null
+            ? $this->commentRepository->getAll()
+            : $this->commentRepository->getByPublicationId($publicationId);
+
+        return $comments->map(
+            fn (Comment $comment) => CommentResponseDto::fromModel($comment)
+        );
+    }
+
+    public function getCommentById(int $id): CommentResponseDto
+    {
+        return CommentResponseDto::fromModel($this->findCommentOrFail($id));
+    }
+
+    public function createComment(CommentRequestDto $commentRequest, int $userId): CommentResponseDto
+    {
+        $comment = $this->commentRepository->create([
+            'content' => $commentRequest->content,
+            'userId' => $userId,
             'publicationId' => $commentRequest->publicationId,
         ]);
 
+        return CommentResponseDto::fromModel($comment);
     }
 
-    public function getComments(\App\DTOs\CommentRequestDto $commentRequestDto)
+    public function updateComment(int $id, string $content, int $userId): CommentResponseDto
     {
-        return Comment::where('publicationId', $commentRequestDto->publicationId)
-            ->paginate(10);
+        $this->ensureOwner($this->findCommentOrFail($id), $userId, 'modify');
+
+        return CommentResponseDto::fromModel(
+            $this->commentRepository->update($id, ['content' => $content])
+        );
     }
 
-    public function deleteComment(\App\DTOs\CommentRequestDto $commentRequestDto, ICommentRepository $commentRepository)
+    public function deleteComment(int $id, int $userId): bool
     {
-        /// falta arreglar el $comment porque aun no agarra el comentario por id de usuario
-        $comment = $this->$commentRepository->getByUserId();
+        $this->ensureOwner($this->findCommentOrFail($id), $userId, 'delete');
 
-        if (Gate::denies('delete', $comment)) {
-            throw new AuthorizationException(
-                'No tienes permiso para eliminar este comentario.'
-            );
+        return $this->commentRepository->delete($id);
+    }
+
+    private function findCommentOrFail(int $id): Comment
+    {
+        $comment = $this->commentRepository->findById($id);
+
+        if (! $comment) {
+            throw (new ModelNotFoundException)->setModel(Comment::class, [$id]);
         }
 
-        return $comment->delete();
-
+        return $comment;
     }
 
-    public function getComment(\App\DTOs\CommentRequestDto $commentRequestDto, ICommentRepository $commentRepository)
+    private function ensureOwner(Comment $comment, int $userId, string $action): void
     {
-        // TODO: Implement getComment() method.
+        if ((int) $comment->userId !== $userId) {
+            throw new AccessDeniedHttpException(
+                "You do not have permission to {$action} this comment."
+            );
+        }
     }
 }

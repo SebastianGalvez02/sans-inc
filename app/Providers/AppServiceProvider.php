@@ -72,6 +72,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\ICommentRepository::class,
             \App\Repositories\Implements\CommentRepository::class
         );
+
+        $this->app->bind(
+            \App\Services\Interfaces\ICommentService::class,
+            \App\Services\Implements\CommentService::class
+        );
     }
 
     /**
