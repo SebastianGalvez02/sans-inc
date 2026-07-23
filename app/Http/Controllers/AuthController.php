@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use App\Mail\ResetPasswordMail;
-use App\Mail\VerifyRegistrationMail;
+use App\Mail\RegistrationConfirmationMail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\User;
@@ -76,20 +76,12 @@ class AuthController extends Controller
 
         $savedUser = $this->userRepository->save($user);
 
-        $verificationUrl = URL::temporarySignedRoute(
-            'register.verify',
-            now()->addHours(24),
-            [
-                'id' => $savedUser->id,
-                'hash' => sha1($savedUser->email),
-            ]
-        );
-
+        // 5. Dispatch confirmation email to the queue
         Mail::to($savedUser->email)->queue(
-            new VerifyRegistrationMail($verificationUrl, $savedUser->name)
+            new RegistrationConfirmationMail($savedUser->name)
         );
 
-        // 5. Return 201 Created with response DTO
+        // 6. Return 201 Created with response DTO
         $responseDTO = new RegisterResponseDTO($savedUser);
 
         return response()->json([
