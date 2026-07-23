@@ -91,6 +91,38 @@
             box-shadow: 0 1px 4px rgba(15, 27, 51, 0.08);
         }
 
+        .active-filter-bar {
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            background: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 8px;
+            padding: 0.7rem 0.95rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.92rem;
+            color: #24324d;
+            box-shadow: 0 1px 4px rgba(15, 27, 51, 0.08);
+        }
+
+        .active-filter-bar.is-active {
+            display: flex;
+        }
+
+        .active-filter-bar strong {
+            color: #0f1b33;
+        }
+
+        .active-filter-bar button {
+            margin-left: auto;
+            border: 0;
+            background: transparent;
+            color: #315df4;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
         .feed-list {
             display: grid;
             gap: 1.2rem;
@@ -367,6 +399,11 @@
         </div>
     </div>
 
+    <div class="active-filter-bar" id="activeFilterBar">
+        <span>Resultados para: <strong id="activeFilterName"></strong></span>
+        <button type="button" id="clearFilterButton">Quitar búsqueda ✕</button>
+    </div>
+
     <div id="feedList" class="feed-list"></div>
     <div id="emptyFeed" class="empty-feed">No hay publicaciones disponibles.</div>
     <div id="feedError" class="feed-error">No se pudieron cargar las publicaciones.</div>
@@ -388,6 +425,11 @@
     const gridViewButton = document.getElementById('gridViewButton');
     const loginRequiredModal = document.getElementById('loginRequiredModal');
     const loginRequiredButton = document.getElementById('loginRequiredButton');
+    const activeFilterBar = document.getElementById('activeFilterBar');
+    const activeFilterName = document.getElementById('activeFilterName');
+    const clearFilterButton = document.getElementById('clearFilterButton');
+
+    let currentFilterProductId = null;
 
     function escapeHtml(value) {
         return String(value ?? '')
@@ -570,10 +612,24 @@
         });
     }
 
-    async function loadPublications() {
+    function setFilterUi(product) {
+        if (product) {
+            activeFilterBar.classList.add('is-active');
+            activeFilterName.textContent = product.name;
+        } else {
+            activeFilterBar.classList.remove('is-active');
+            activeFilterName.textContent = '';
+        }
+    }
+
+    async function loadPublications(productId = null) {
         try {
+            const publicationsUrl = productId
+                ? `/api/publications?productId=${encodeURIComponent(productId)}`
+                : '/api/publications';
+
             const [publicationsResponse, productsResponse] = await Promise.all([
-                fetch('/api/publications', { headers: apiHeaders() }),
+                fetch(publicationsUrl, { headers: apiHeaders() }),
                 fetch('/api/products', { headers: apiHeaders() }),
             ]);
 
@@ -590,6 +646,24 @@
             feedError.style.display = 'block';
         }
     }
+
+    window.sansApplyProductFilter = function (product) {
+        currentFilterProductId = product ? product.id : null;
+        setFilterUi(product);
+
+        const url = new URL(window.location.href);
+
+        if (product) {
+            url.searchParams.set('productId', product.id);
+            url.searchParams.set('nombre', product.name);
+        } else {
+            url.searchParams.delete('productId');
+            url.searchParams.delete('nombre');
+        }
+
+        window.history.pushState({}, '', url);
+        loadPublications(currentFilterProductId);
+    };
 
     listViewButton.addEventListener('click', () => {
         feedList.classList.remove('is-grid');
@@ -614,15 +688,39 @@
         }
     });
 
+    clearFilterButton.addEventListener('click', () => window.sansApplyProductFilter(null));
+
     window.addEventListener('sans-auth-changed', () => {
         if (localStorage.getItem('jwtToken')) {
             loginRequiredModal.classList.remove('is-open');
         }
 
-        loadPublications();
+        loadPublications(currentFilterProductId);
     });
 
-    loadPublications();
+    window.addEventListener('popstate', () => {
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('productId');
+        const nombre = params.get('nombre');
+
+        currentFilterProductId = productId;
+        setFilterUi(productId ? { id: productId, name: nombre || `Producto #${productId}` } : null);
+        loadPublications(productId);
+    });
+
+    (function init() {
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('productId');
+        const nombre = params.get('nombre');
+
+        if (productId) {
+            currentFilterProductId = productId;
+            setFilterUi({ id: productId, name: nombre || `Producto #${productId}` });
+            loadPublications(productId);
+        } else {
+            loadPublications();
+        }
+    })();
 </script>
 
 </body>
