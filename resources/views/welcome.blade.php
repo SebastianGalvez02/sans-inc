@@ -20,10 +20,6 @@
         background-color: #f0f0f0;
     }
 
-    .sans-page-content {
-        width: 100%;
-        flex: 1;
-    }
         * {
             box-sizing: border-box;
         }
@@ -40,6 +36,7 @@
             width: min(100%, 680px);
             margin: 0 auto;
             padding: 1.6rem 1rem 3rem;
+            flex: 1;
         }
 
         .feed-toolbar {
@@ -385,11 +382,6 @@
     </form>
 </x-login-panel>
 
-<main class="sans-page-content">
-    {{-- Contenido principal de la página --}}
-</main>
-
-<x-footer />
 <main class="feed-page">
     <div class="feed-toolbar">
         <h1 class="feed-title">Feed de Reseñas</h1>
@@ -431,6 +423,8 @@
     <div id="emptyFeed" class="empty-feed">No hay publicaciones disponibles.</div>
     <div id="feedError" class="feed-error">No se pudieron cargar las publicaciones.</div>
 </main>
+
+<x-footer />
 
 <div class="login-required-modal" id="loginRequiredModal" role="dialog" aria-modal="true" aria-labelledby="loginRequiredTitle">
     <div class="login-required-box">
