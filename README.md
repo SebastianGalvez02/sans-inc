@@ -218,3 +218,54 @@ Estos archivos si deben subirse cuando cambian:
 - `package.json`
 - `package-lock.json`
 - archivos dentro de `app/`, `routes/`, `database/`, `resources/`, `public/`, `config/` y `tests/`
+
+## Modulo de Agenda de Atencion (RF-20, RF-21, RN-14, RN-15)
+
+Este modulo permite que un usuario con rol **cliente** registre solicitudes de contacto con Sans Inc.
+
+### Funcionalidad
+
+- Un cliente puede crear una agenda indicando telefono, razon de contacto y fecha agendada.
+- Un cliente puede ver sus agendas activas.
+- Un cliente puede cancelar sus propias agendas (baja logica, no borrado fisico).
+- Solo usuarios con rol `client` pueden acceder a estas rutas (RN-15).
+
+### Endpoints
+
+Todas las rutas requieren autenticacion JWT (`Authorization: Bearer <token>`).
+
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| GET | `/api/agenda` | Listar agendas del usuario autenticado |
+| POST | `/api/agenda` | Crear una nueva agenda |
+| DELETE | `/api/agenda/{id}` | Cancelar una agenda |
+
+### Cuerpo de la peticion (POST /api/agenda)
+
+```json
+{
+    "phone": "123456789",
+    "reason": "Consulta sobre producto",
+    "scheduled_date": "2026-08-01 10:00:00"
+}
+```
+
+### Arquitectura
+
+El modulo sigue el patron del proyecto:
+
+```text
+AgendaController → AgendaService → AgendaRepository → Agenda (Model)
+```
+
+- `app/Models/Agenda.php` — modelo con baja logica (`active`, `deleted_at`)
+- `app/DTOs/AgendaCreateDto.php` — transporte de datos entre capas
+- `app/Repositories/Interfaces/IAgendaRepository.php` — contrato del repositorio
+- `app/Repositories/Eloquent/AgendaRepository.php` — implementacion Eloquent
+- `app/Services/Interfaces/IAgendaService.php` — contrato del servicio
+- `app/Services/AgendaService.php` — logica de negocio
+- `app/Http/Controllers/AgendaController.php` — controlador con respuestas JSON
+- `app/Http/Requests/StoreAgendaRequest.php` — validacion de entrada
+- `app/Http/Middleware/EnsureUserIsClient.php` — restriccion de rol cliente
+- `app/Providers/AgendaServiceProvider.php` — bindings del modulo
+- `database/migrations/2026_06_24_184411_create_agendas_table.php` — migracion

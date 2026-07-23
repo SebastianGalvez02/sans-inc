@@ -2,6 +2,11 @@
 
 namespace App\DTOs;
 
+/**
+ * AgendaCreateDto
+ * Data Transfer Object used to carry agenda creation data between layers.
+ * Avoids passing raw request arrays directly into services and repositories.
+ */
 class AgendaCreateDto
 {
     public function __construct(
@@ -11,6 +16,9 @@ class AgendaCreateDto
         public readonly string $phone,
     ) {}
 
+    /**
+     * Build a DTO instance from a validated request array and the authenticated user ID.
+     */
     public static function fromRequest(int $userId, array $validated): self
     {
         return new self(
@@ -21,6 +29,9 @@ class AgendaCreateDto
         );
     }
 
+    /**
+     * Convert the DTO to an array suitable for mass assignment in the repository.
+     */
     public function toArray(): array
     {
         return [

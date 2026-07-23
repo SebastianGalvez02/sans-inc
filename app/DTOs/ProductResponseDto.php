@@ -6,8 +6,27 @@ use App\Models\Product;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
+/**
+ * Clase para transportar datos de respuesta de productos.
+ *
+ * Expone una estructura estable para retornar productos desde la API
+ * sin entregar directamente el modelo Eloquent.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 class ProductResponseDto implements Arrayable, JsonSerializable
 {
+    /**
+     * Inicializa los datos publicos de respuesta de un producto.
+     *
+     * @param int $id
+     * @param string $name
+     * @param string|null $description
+     * @param float $price
+     * @param string|null $tag
+     * @param bool $active
+     */
     public function __construct(
         public readonly int $id,
         public readonly string $name,
@@ -20,7 +39,7 @@ class ProductResponseDto implements Arrayable, JsonSerializable
     }
 
     /**
-     * Map Product model to ProductResponseDto.
+     * Convierte un modelo Product en ProductResponseDto.
      *
      * @param Product $product
      * @return self
@@ -39,7 +58,7 @@ class ProductResponseDto implements Arrayable, JsonSerializable
     }
 
     /**
-     * Convert the DTO to an array.
+     * Convierte el DTO en un arreglo serializable.
      *
      * @return array
      */
@@ -56,7 +75,7 @@ class ProductResponseDto implements Arrayable, JsonSerializable
         ];
     }
     /**
-     * Convert the object to its JSON serializable representation.
+     * Convierte el DTO en una estructura compatible con JSON.
      *
      * @return array
      */

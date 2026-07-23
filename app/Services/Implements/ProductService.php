@@ -8,12 +8,21 @@ use App\Services\Interfaces\IProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
+/**
+ * Clase para procesar la logica de negocio de productos.
+ *
+ * Coordina las consultas del repositorio y transforma los modelos
+ * Product en DTOs de respuesta para la API.
+ *
+ * @author Equipo Sans Inc.
+ * @version 1.0
+ */
 class ProductService implements IProductService
 {
     protected IProductRepository $productRepository;
 
     /**
-     * ProductService constructor.
+     * Inicializa el servicio con el repositorio de productos.
      *
      * @param IProductRepository $productRepository
      */
@@ -23,7 +32,7 @@ class ProductService implements IProductService
     }
 
     /**
-     * List all available (active) products.
+     * Realiza el listado de productos disponibles.
      *
      * @return Collection<int, ProductResponseDto>
      */
@@ -35,7 +44,7 @@ class ProductService implements IProductService
     }
 
     /**
-     * Get an active product for review.
+     * Obtiene un producto activo para resenia.
      *
      * @param int $id
      * @return ProductResponseDto
@@ -53,7 +62,7 @@ class ProductService implements IProductService
     }
 
     /**
-     * List active products by category ID.
+     * Realiza el listado de productos activos por categoria.
      *
      * @param int $categoryId
      * @return Collection<int, ProductResponseDto>
