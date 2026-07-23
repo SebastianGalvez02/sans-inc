@@ -3,7 +3,19 @@
 
         {{-- Información general de la empresa --}}
         <div class="sans-footer__section sans-footer__brand">
-            <a href="/" class="sans-footer__logo">Sans Inc</a>
+            <a
+                href="/"
+                class="sans-footer__brand-link"
+                aria-label="Ir al inicio de Sans Inc"
+            >
+                <img
+                    src="{{ asset('images/LogoSans.jpeg') }}"
+                    alt="Logo de Sans Inc"
+                    class="sans-footer__brand-image"
+                >
+
+                <span class="sans-footer__logo">Sans Inc</span>
+            </a>
 
             <p class="sans-footer__description">
                 Plataforma web de reseñas de productos.
@@ -94,17 +106,34 @@
         min-width: 0;
     }
 
-    .sans-footer__logo {
-        display: inline-block;
+    .sans-footer__brand-link {
+        width: fit-content;
         margin-bottom: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        text-decoration: none;
+    }
+
+    .sans-footer__brand-image {
+        width: 58px;
+        height: 58px;
+        padding: 3px;
+        flex-shrink: 0;
+        object-fit: contain;
+        background-color: #ffffff;
+        border-radius: 50%;
+    }
+
+    .sans-footer__logo {
         color: #ffffff;
         font-size: 1.35rem;
         font-weight: 700;
         letter-spacing: 0.2px;
-        text-decoration: none;
+        transition: color 0.2s;
     }
 
-    .sans-footer__logo:hover {
+    .sans-footer__brand-link:hover .sans-footer__logo {
         color: #b8c5ff;
     }
 
