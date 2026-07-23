@@ -48,7 +48,9 @@ Route::get('/register/verify/{id}/{hash}', function (Request $request, int $id, 
 Route::get('/agenda', function () {
     return view('agenda');
 });
-
+Route::get('/perfil', function () {
+    return view('perfil');
+});
 Route::middleware(['auth', 'client'])->group(function () {
     Route::get('/agenda/create', [\App\Http\Controllers\AgendaController::class, 'create'])->name('agenda.create');
     Route::post('/agenda', [\App\Http\Controllers\AgendaController::class, 'store'])->name('agenda.store');
