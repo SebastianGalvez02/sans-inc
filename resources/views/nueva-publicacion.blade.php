@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>New Publication - Sans Inc</title>
+    <link rel="icon" type="image/png" href="{{ asset('sans-favicon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         html,
@@ -214,6 +215,16 @@
             gap: 0.75rem;
         }
 
+        .actions #loggedActions {
+            width: 100%;
+            flex-direction: row !important;
+            gap: 0.75rem;
+        }
+
+        .actions #loggedActions .btn {
+            flex: 1 1 0;
+        }
+
         .btn {
             width: 100%;
             padding: 0.95rem 1.2rem;
@@ -248,6 +259,53 @@
         }
 
         .btn-login-inline:hover {
+            background: #2a3442;
+        }
+
+        .publication-message-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.48);
+        }
+
+        .publication-message-modal.is-open {
+            display: flex;
+        }
+
+        .publication-message-box {
+            width: min(100%, 390px);
+            padding: 1.5rem;
+            background: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 10px;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.24);
+            text-align: center;
+        }
+
+        .publication-message-box h2 {
+            margin: 0 0 1.25rem;
+            color: #1b2437;
+            font-size: 1.15rem;
+        }
+
+        .publication-message-button {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #1b2437;
+            border-radius: 8px;
+            background: #1b2437;
+            color: #ffffff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .publication-message-button:hover {
             background: #2a3442;
         }
 
@@ -326,8 +384,15 @@
 
             <div class="actions">
                 <div id="notLoggedActions"></div>
-                <div id="loggedActions" style="display:none; flex-direction:column; gap:0.75rem;"></div>
+                <div id="loggedActions" style="display:none;"></div>
             </div>
+    </div>
+</div>
+
+<div class="publication-message-modal" id="publicationSuccessModal" role="dialog" aria-modal="true" aria-labelledby="publicationSuccessTitle">
+    <div class="publication-message-box">
+        <h2 id="publicationSuccessTitle">Publication created successfully</h2>
+        <button type="button" class="publication-message-button" id="publicationSuccessButton">Accept</button>
     </div>
 </div>
 
@@ -339,6 +404,16 @@
     const imageDropzone = document.getElementById('imageDropzone');
     const imagePreview = document.getElementById('imagePreview');
     const imagePlaceholder = document.getElementById('imagePlaceholder');
+    const publicationSuccessModal = document.getElementById('publicationSuccessModal');
+    const publicationSuccessButton = document.getElementById('publicationSuccessButton');
+
+    function showPublicationSuccess() {
+        publicationSuccessModal.classList.add('is-open');
+    }
+
+    publicationSuccessButton.addEventListener('click', () => {
+        window.location.href = '/';
+    });
 
     function showImagePreview(file) {
         if (!file) {
@@ -470,9 +545,8 @@
                 body: JSON.stringify({ productId: parseInt(productId), rating, review })
             });
             if (res.status === 201) {
-                const data = await res.json();
-                alert('Publication created successfully');
-                window.location.href = '/';
+                await res.json();
+                showPublicationSuccess();
             } else {
                 const err = await res.json();
                 alert('Error: ' + (err.message || JSON.stringify(err)));

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Profile - Sans Inc</title>
+    <link rel="icon" type="image/png" href="{{ asset('sans-favicon.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

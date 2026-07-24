@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sans Inc</title>
+    <link rel="icon" type="image/png" href="{{ asset('sans-favicon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
     html,
@@ -108,6 +109,58 @@
             background: #ffffff;
             border: 1px solid #d8dde6;
             box-shadow: 0 1px 4px rgba(15, 27, 51, 0.08);
+        }
+
+        .filter-control {
+            position: relative;
+        }
+
+        .category-filter-menu {
+            position: absolute;
+            top: calc(100% + 0.45rem);
+            right: 0;
+            z-index: 200;
+            display: none;
+            width: min(250px, 80vw);
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 0.4rem;
+            background: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 8px;
+            box-shadow: 0 10px 24px rgba(15, 27, 51, 0.16);
+        }
+
+        .category-filter-menu.is-open {
+            display: grid;
+            gap: 0.2rem;
+        }
+
+        .category-filter-option {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 0;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #1a2332;
+            font: inherit;
+            font-size: 0.88rem;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .category-filter-option:hover,
+        .category-filter-option.is-active {
+            background: #f1f5f9;
+            color: #1b2437;
+            font-weight: 700;
+        }
+
+        .category-filter-status {
+            margin: 0;
+            padding: 0.65rem 0.75rem;
+            color: #64748b;
+            font-size: 0.84rem;
         }
 
         .active-filter-bar {
@@ -945,12 +998,15 @@
                 </button>
             </div>
 
-            <button type="button" class="filter-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h18M6 12h12M10 19h4" />
-                </svg>
-                Filter
-            </button>
+            <div class="filter-control">
+                <button type="button" class="filter-button" id="filterButton" aria-expanded="false" aria-controls="categoryFilterMenu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h18M6 12h12M10 19h4" />
+                    </svg>
+                    Filter
+                </button>
+                <div class="category-filter-menu" id="categoryFilterMenu" role="menu" aria-label="Filter by category"></div>
+            </div>
         </div>
     </div>
 
@@ -998,8 +1054,11 @@
     const activeFilterBar = document.getElementById('activeFilterBar');
     const activeFilterName = document.getElementById('activeFilterName');
     const clearFilterButton = document.getElementById('clearFilterButton');
+    const filterButton = document.getElementById('filterButton');
+    const categoryFilterMenu = document.getElementById('categoryFilterMenu');
 
     let currentFilterProductId = null;
+    let currentFilterCategoryId = null;
     let expandedPublicationId = null;
     let commentToDelete = null;
     const commentMaxLength = 255;
@@ -1046,6 +1105,83 @@
             map[product.productId ?? product.id] = product.name;
             return map;
         }, {});
+    }
+
+    function renderCategoryFilter(categories, products) {
+        const availableCategoryIds = new Set(
+            products.map((product) => Number(product.categoryId)).filter(Number.isFinite)
+        );
+        const categoriesByName = new Map();
+
+        categories.forEach((category) => {
+            const categoryId = Number(category.id ?? category.categoryId);
+            const categoryName = category.name ?? category.categoryName;
+
+            if (!availableCategoryIds.has(categoryId) || !categoryName) {
+                return;
+            }
+
+            if (!categoriesByName.has(categoryName)) {
+                categoriesByName.set(categoryName, {
+                    name: categoryName,
+                    ids: [],
+                });
+            }
+
+            categoriesByName.get(categoryName).ids.push(categoryId);
+        });
+
+        const availableCategories = [...categoriesByName.values()];
+
+        if (!availableCategories.length) {
+            categoryFilterMenu.innerHTML = '<p class="category-filter-status">No categories available.</p>';
+            return;
+        }
+
+        categoryFilterMenu.innerHTML = `
+            <button type="button" class="category-filter-option ${currentFilterCategoryId === null ? 'is-active' : ''}" data-category-id="" role="menuitem">
+                All categories
+            </button>
+            ${availableCategories.map((category) => {
+                const categoryIds = category.ids.join(',');
+                const isActive = String(currentFilterCategoryId) === categoryIds;
+                return `
+                    <button type="button" class="category-filter-option ${isActive ? 'is-active' : ''}" data-category-id="${categoryIds}" role="menuitem">
+                        ${escapeHtml(category.name)}
+                    </button>
+                `;
+            }).join('')}
+        `;
+
+        categoryFilterMenu.querySelectorAll('[data-category-id]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const categoryId = button.dataset.categoryId || null;
+                const category = availableCategories.find(
+                    (item) => item.ids.join(',') === String(categoryId)
+                );
+
+                currentFilterProductId = null;
+                currentFilterCategoryId = categoryId;
+                setFilterUi(category ? { name: category.name } : null);
+
+                const url = new URL(window.location.href);
+                url.searchParams.delete('productId');
+                url.searchParams.delete('nombre');
+
+                if (category) {
+                    url.searchParams.set('categoryId', categoryId);
+                    url.searchParams.set('categoryName', category.name);
+                } else {
+                    url.searchParams.delete('categoryId');
+                    url.searchParams.delete('categoryName');
+                }
+
+                window.history.pushState({}, '', url);
+                categoryFilterMenu.classList.remove('is-open');
+                filterButton.setAttribute('aria-expanded', 'false');
+                loadPublications(null, categoryId);
+            });
+        });
     }
 
     function getPublicationUserName(publication) {
@@ -1305,8 +1441,8 @@
                         <div class="comment-edit-form" data-comment-edit-form hidden>
                             <textarea class="comment-edit-input" data-edit-input maxlength="255">${escapeHtml(comment.content)}</textarea>
                             <div class="comment-edit-actions">
-                                <button type="button" class="comment-edit-cancel" data-edit-cancel>cancelar</button>
-                                <button type="button" class="comment-edit-save" data-edit-save>aceptar</button>
+                                <button type="button" class="comment-edit-cancel" data-edit-cancel>Cancel</button>
+                                <button type="button" class="comment-edit-save" data-edit-save>Accept</button>
                             </div>
                         </div>
                     </div>
@@ -1687,15 +1823,16 @@
         }
     }
 
-    async function loadPublications(productId = null) {
+    async function loadPublications(productId = null, categoryId = null) {
         try {
             const publicationsUrl = productId
                 ? `/api/publications?productId=${encodeURIComponent(productId)}`
                 : '/api/publications';
 
-            const [publicationsResponse, productsResponse] = await Promise.all([
+            const [publicationsResponse, productsResponse, categoriesResponse] = await Promise.all([
                 fetch(publicationsUrl, { headers: apiHeaders() }),
                 fetch('/api/products', { headers: apiHeaders() }),
+                fetch('/api/categories', { headers: apiHeaders() }),
             ]);
 
             if (!publicationsResponse.ok) {
@@ -1704,9 +1841,27 @@
 
             const publications = await publicationsResponse.json();
             const products = productsResponse.ok ? await productsResponse.json() : [];
-            const ordered = [...publications].sort((a, b) => new Date(b.publicationDate) - new Date(a.publicationDate));
+            const categories = categoriesResponse.ok ? await categoriesResponse.json() : [];
+            renderCategoryFilter(categories, products);
 
-            renderPublications(ordered, buildProductMap(products));
+            const productsById = buildProductMap(products);
+            const categoryIds = new Set(
+                String(categoryId ?? '')
+                    .split(',')
+                    .map(Number)
+                    .filter(Number.isFinite)
+            );
+            const filteredPublications = categoryId === null
+                ? publications
+                : publications.filter((publication) => {
+                    const product = products.find(
+                        (item) => Number(item.productId ?? item.id) === Number(publication.productId)
+                    );
+                    return product && categoryIds.has(Number(product.categoryId));
+                });
+            const ordered = [...filteredPublications].sort((a, b) => new Date(b.publicationDate) - new Date(a.publicationDate));
+
+            renderPublications(ordered, productsById);
 
             if (expandedPublicationId !== null) {
                 const publication = ordered.find(
@@ -1727,6 +1882,7 @@
 
     window.sansApplyProductFilter = function (product) {
         currentFilterProductId = product ? product.id : null;
+        currentFilterCategoryId = null;
         setFilterUi(product);
 
         const url = new URL(window.location.href);
@@ -1739,8 +1895,11 @@
             url.searchParams.delete('nombre');
         }
 
+        url.searchParams.delete('categoryId');
+        url.searchParams.delete('categoryName');
+
         window.history.pushState({}, '', url);
-        loadPublications(currentFilterProductId);
+        loadPublications(currentFilterProductId, null);
     };
 
     listViewButton.addEventListener('click', () => {
@@ -1753,6 +1912,12 @@
         feedList.classList.add('is-grid');
         gridViewButton.classList.add('is-active');
         listViewButton.classList.remove('is-active');
+    });
+
+    filterButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = categoryFilterMenu.classList.toggle('is-open');
+        filterButton.setAttribute('aria-expanded', String(isOpen));
     });
 
     loginRequiredButton.addEventListener('click', () => {
@@ -1772,6 +1937,11 @@
         if (!event.target.closest('.comment-actions')) {
             closeCommentMenus();
         }
+
+        if (!event.target.closest('.filter-control')) {
+            categoryFilterMenu.classList.remove('is-open');
+            filterButton.setAttribute('aria-expanded', 'false');
+        }
     });
     commentConfirmModal.addEventListener('click', (event) => {
         if (event.target === commentConfirmModal) {
@@ -1783,6 +1953,9 @@
         if (event.key === 'Escape') {
             if (commentConfirmModal.classList.contains('is-open')) {
                 closeCommentConfirmation();
+            } else if (categoryFilterMenu.classList.contains('is-open')) {
+                categoryFilterMenu.classList.remove('is-open');
+                filterButton.setAttribute('aria-expanded', 'false');
             } else if (expandedPublicationId !== null) {
                 closePublicationDetail();
             }
@@ -1796,30 +1969,49 @@
             loginRequiredModal.classList.remove('is-open');
         }
 
-        loadPublications(currentFilterProductId);
+        loadPublications(currentFilterProductId, currentFilterCategoryId);
     });
 
     window.addEventListener('popstate', () => {
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('productId');
         const nombre = params.get('nombre');
+        const categoryId = params.get('categoryId');
+        const categoryName = params.get('categoryName');
 
         currentFilterProductId = productId;
-        setFilterUi(productId ? { id: productId, name: nombre || `Product #${productId}` } : null);
-        loadPublications(productId);
+        currentFilterCategoryId = categoryId;
+        setFilterUi(
+            productId
+                ? { id: productId, name: nombre || `Product #${productId}` }
+                : categoryId
+                    ? { id: categoryId, name: categoryName || `Category #${categoryId}` }
+                    : null
+        );
+        loadPublications(productId, categoryId);
     });
 
     (function init() {
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('productId');
         const nombre = params.get('nombre');
+        const categoryId = params.get('categoryId');
+        const categoryName = params.get('categoryName');
 
         if (productId) {
             currentFilterProductId = productId;
+            currentFilterCategoryId = null;
             setFilterUi({ id: productId, name: nombre || `Product #${productId}` });
-            loadPublications(productId);
+            loadPublications(productId, null);
+        } else if (categoryId) {
+            currentFilterProductId = null;
+            currentFilterCategoryId = categoryId;
+            setFilterUi({ id: categoryId, name: categoryName || `Category #${categoryId}` });
+            loadPublications(null, categoryId);
         } else {
-            loadPublications();
+            currentFilterProductId = null;
+            currentFilterCategoryId = null;
+            loadPublications(null, null);
         }
     })();
 </script>
