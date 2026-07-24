@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>New Publication - Sans Inc</title>
+    <link rel="icon" type="image/png" href="{{ asset('sans-favicon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         html,
@@ -214,6 +215,16 @@
             gap: 0.75rem;
         }
 
+        .actions #loggedActions {
+            width: 100%;
+            flex-direction: row !important;
+            gap: 0.75rem;
+        }
+
+        .actions #loggedActions .btn {
+            flex: 1 1 0;
+        }
+
         .btn {
             width: 100%;
             padding: 0.95rem 1.2rem;
@@ -248,6 +259,59 @@
         }
 
         .btn-login-inline:hover {
+            background: #2a3442;
+        }
+
+        .publication-message-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.48);
+        }
+
+        .publication-message-modal.is-open {
+            display: flex;
+        }
+
+        .publication-message-box {
+            width: min(100%, 390px);
+            padding: 1.5rem;
+            background: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 10px;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.24);
+            text-align: center;
+        }
+
+        .publication-message-box h2 {
+            margin: 0 0 1.25rem;
+            color: #1b2437;
+            font-size: 1.15rem;
+        }
+
+        .publication-message-box p {
+            margin: -0.55rem 0 1.25rem;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .publication-message-button {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #1b2437;
+            border-radius: 8px;
+            background: #1b2437;
+            color: #ffffff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .publication-message-button:hover {
             background: #2a3442;
         }
 
@@ -326,8 +390,16 @@
 
             <div class="actions">
                 <div id="notLoggedActions"></div>
-                <div id="loggedActions" style="display:none; flex-direction:column; gap:0.75rem;"></div>
+                <div id="loggedActions" style="display:none;"></div>
             </div>
+    </div>
+</div>
+
+<div class="publication-message-modal" id="publicationMessageModal" role="dialog" aria-modal="true" aria-labelledby="publicationMessageTitle">
+    <div class="publication-message-box">
+        <h2 id="publicationMessageTitle">Publication</h2>
+        <p id="publicationMessageText"></p>
+        <button type="button" class="publication-message-button" id="publicationMessageButton">Accept</button>
     </div>
 </div>
 
@@ -339,6 +411,27 @@
     const imageDropzone = document.getElementById('imageDropzone');
     const imagePreview = document.getElementById('imagePreview');
     const imagePlaceholder = document.getElementById('imagePlaceholder');
+    const publicationMessageModal = document.getElementById('publicationMessageModal');
+    const publicationMessageTitle = document.getElementById('publicationMessageTitle');
+    const publicationMessageText = document.getElementById('publicationMessageText');
+    const publicationMessageButton = document.getElementById('publicationMessageButton');
+    let publicationMessageRedirect = null;
+
+    function showPublicationMessage(message, redirect = null) {
+        publicationMessageRedirect = redirect;
+        publicationMessageTitle.textContent = redirect ? 'Publication created successfully' : 'Publication notice';
+        publicationMessageText.textContent = message;
+        publicationMessageText.style.display = message ? 'block' : 'none';
+        publicationMessageModal.classList.add('is-open');
+    }
+
+    publicationMessageButton.addEventListener('click', () => {
+        publicationMessageModal.classList.remove('is-open');
+
+        if (publicationMessageRedirect) {
+            window.location.href = publicationMessageRedirect;
+        }
+    });
 
     function showImagePreview(file) {
         if (!file) {
@@ -443,12 +536,7 @@
             logged.style.display='flex';
             logged.innerHTML = '<button type="button" class="btn btn-cancel" id="cancelBtn">Cancel</button><button type="button" class="btn btn-publish" id="publishBtn">Publish</button>';
             document.getElementById('cancelBtn').addEventListener('click', ()=>{
-                document.getElementById('publication-card').querySelectorAll('input,textarea').forEach(i=>i.value='');
-                document.getElementById('ratingInput').value = '5';
-                document.getElementById('charsLeft').textContent = '255';
-                imageInput.value = '';
-                showImagePreview(null);
-                document.getElementById('selectedProductId').value = '';
+                window.location.href = '/';
             });
             document.getElementById('publishBtn').addEventListener('click', publish);
         }
@@ -460,7 +548,10 @@
         const productId = document.getElementById('selectedProductId').value;
         const rating = parseFloat(document.getElementById('ratingInput').value);
         const review = document.getElementById('reviewInput').value;
-        if (!productId) { alert('Select a product from the list.'); return; }
+        if (!productId) {
+            showPublicationMessage('Select a product from the list.');
+            return;
+        }
         const token = localStorage.getItem('jwtToken');
         if (!token) { abrirPanel(); return; }
         try{
@@ -470,14 +561,13 @@
                 body: JSON.stringify({ productId: parseInt(productId), rating, review })
             });
             if (res.status === 201) {
-                const data = await res.json();
-                alert('Publication created successfully');
-                window.location.href = '/';
+                await res.json();
+                showPublicationMessage('', '/');
             } else {
                 const err = await res.json();
-                alert('Error: ' + (err.message || JSON.stringify(err)));
+                showPublicationMessage('Error: ' + (err.message || JSON.stringify(err)));
             }
-        } catch(e){ alert('Error connecting to the API'); }
+        } catch(e){ showPublicationMessage('Error connecting to the API'); }
     }
 
     // Refresh actions if user logs in/out in another tab

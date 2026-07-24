@@ -90,7 +90,7 @@ class PublicationRepository implements IPublicationRepository
             $userId = null;
         }
 
-        return $query->with([
+        return $query->withCount('comments')->with([
             'likes' => function ($likesQuery) use ($userId) {
                 if ($userId === null) {
                     $likesQuery->whereRaw('0 = 1');
