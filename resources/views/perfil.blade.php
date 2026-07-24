@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Perfil - Sans Inc</title>
+    <title>Profile - Sans Inc</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -378,7 +378,7 @@
             type="email"
             name="email"
             class="panel-input"
-            placeholder="Correo electrónico"
+            placeholder="Email"
             required
         >
 
@@ -386,23 +386,23 @@
             type="password"
             name="password"
             class="panel-input"
-            placeholder="Contraseña"
+            placeholder="Password"
             required
         >
 
         <button type="submit" class="btn-login" data-login-submit>
-            Iniciar Sesión
+            Log In
         </button>
 
-        <a href="/register" class="btn-register">Registrarse</a>
-        <a href="/recuperar" class="panel-recover">Recuperar contraseña</a>
+        <a href="/register" class="btn-register">Sign Up</a>
+        <a href="/recuperar" class="panel-recover">Forgot password</a>
     </form>
 </x-login-panel>
 
 <main class="profile-page">
 
     <div id="profileLoading" class="profile-loading">
-        Cargando perfil...
+        Loading profile...
     </div>
 
     <section id="profileCard" class="profile-card" style="display:none;">
@@ -442,7 +442,7 @@
                             id="editNameButton"
                             class="change-button"
                         >
-                            Cambiar nombre
+                            Change name
                         </button>
 
                     </div>
@@ -469,7 +469,7 @@
                                 class="change-button is-editing"
                                 disabled
                             >
-                                Cambiar nombre
+                                Change name
                             </button>
 
                         </div>
@@ -481,7 +481,7 @@
                                 type="submit"
                                 class="accept-button"
                             >
-                                Aceptar
+                                Accept
                             </button>
 
                             <button
@@ -489,7 +489,7 @@
                                 type="button"
                                 class="cancel-button"
                             >
-                                Cancelar
+                                Cancel
                             </button>
 
                         </div>
@@ -524,7 +524,7 @@
                             id="editPasswordButton"
                             class="change-button"
                         >
-                            Cambiar contraseña
+                            Change password
                         </button>
 
                     </div>
@@ -542,7 +542,7 @@
                                 id="currentPassword"
                                 type="password"
                                 class="setting-input"
-                                placeholder="Contraseña actual"
+                                placeholder="Current password"
                                 autocomplete="current-password"
                                 required
                             >
@@ -552,7 +552,7 @@
                                 class="change-button is-editing"
                                 disabled
                             >
-                                Cambiar contraseña
+                                Change password
                             </button>
 
                         </div>
@@ -562,7 +562,7 @@
                                 id="newPassword"
                                 type="password"
                                 class="setting-input"
-                                placeholder="Nueva contraseña"
+                                placeholder="New password"
                                 minlength="8"
                                 autocomplete="new-password"
                                 required
@@ -574,7 +574,7 @@
                                 id="confirmPassword"
                                 type="password"
                                 class="setting-input"
-                                placeholder="Repetir contraseña"
+                                placeholder="Repeat password"
                                 minlength="8"
                                 autocomplete="new-password"
                                 required
@@ -588,7 +588,7 @@
                                 type="submit"
                                 class="accept-button"
                             >
-                                Aceptar
+                                Accept
                             </button>
 
                             <button
@@ -596,7 +596,7 @@
                                 type="button"
                                 class="cancel-button"
                             >
-                                Cancelar
+                                Cancel
                             </button>
 
                         </div>
@@ -616,7 +616,7 @@
     <section class="publications-section">
 
         <h2 id="publicationsTitle" class="publications-title">
-            Reseñas del usuario
+            User Reviews
         </h2>
 
         <div id="publicationsGrid" class="publications-grid"></div>
@@ -626,7 +626,7 @@
             class="publications-empty"
             style="display:none;"
         >
-            Este usuario aún no ha publicado reseñas.
+            This user hasn't posted any reviews yet.
         </div>
 
     </section>
@@ -799,19 +799,19 @@
 
     function validateNewPassword(password) {
         if (password.length < 8) {
-            return 'La nueva contraseña debe tener al menos 8 caracteres.';
+            return 'The new password must be at least 8 characters long.';
         }
 
         if (!/[A-Za-z]/.test(password)) {
-            return 'La nueva contraseña debe contener al menos una letra.';
+            return 'The new password must contain at least one letter.';
         }
 
         if (!/[0-9]/.test(password)) {
-            return 'La nueva contraseña debe contener al menos un número.';
+            return 'The new password must contain at least one number.';
         }
 
         if (!/[^A-Za-z0-9]/.test(password)) {
-            return 'La nueva contraseña debe contener al menos un símbolo.';
+            return 'The new password must contain at least one symbol.';
         }
 
         return null;
@@ -841,7 +841,7 @@
             }
 
             if (!response.ok) {
-                throw new Error('No se pudo cargar el perfil.');
+                throw new Error('Unable to load the profile.');
             }
 
             currentUser = await response.json();
@@ -849,7 +849,7 @@
             displayName.textContent = currentUser.name;
             profileName.value = currentUser.name;
             publicationsTitle.textContent =
-                `Reseñas de @${currentUser.name}`;
+                `Reviews by @${currentUser.name}`;
 
             localStorage.setItem(
                 'sansUser',
@@ -863,7 +863,7 @@
 
         } catch (error) {
             profileLoading.textContent =
-                'No se pudo cargar el perfil.';
+                'Unable to load the profile.';
         }
     }
 
@@ -919,7 +919,7 @@
 
             publicationsEmpty.style.display = 'block';
             publicationsEmpty.textContent =
-                'No se pudieron cargar tus publicaciones.';
+                'Unable to load your publications.';
         }
     }
 
@@ -932,7 +932,7 @@
         if (!publications.length) {
             publicationsEmpty.style.display = 'block';
             publicationsEmpty.textContent =
-                'Este usuario aún no ha publicado reseñas.';
+                'This user hasn\'t posted any reviews yet.';
             return;
         }
 
@@ -942,7 +942,7 @@
 
             const productName =
                 productsById[publication.productId]
-                ?? `Producto #${publication.productId}`;
+                ?? `Product #${publication.productId}`;
 
             const card =
                 document.createElement('article');
@@ -972,7 +972,7 @@
                 </div>
 
                 <div class="publication-image-placeholder">
-                    aún no disponible
+                    not yet available
                 </div>
 
                 <div class="publication-content">
@@ -1010,7 +1010,7 @@
                 showMessage(
                     nameMessage,
                     'error',
-                    'Debes ingresar un nombre.'
+                    'You must enter a name.'
                 );
                 return;
             }
@@ -1019,7 +1019,7 @@
                 showMessage(
                     nameMessage,
                     'error',
-                    'El nombre no puede superar los 16 caracteres.'
+                    'The name cannot exceed 16 characters.'
                 );
                 return;
             }
@@ -1052,7 +1052,7 @@
                         nameMessage,
                         'error',
                         errorMessage ||
-                        'No se pudo actualizar el nombre.'
+                        'Unable to update the name.'
                     );
 
                     return;
@@ -1067,7 +1067,7 @@
                     currentUser.name;
 
                 publicationsTitle.textContent =
-                    `Reseñas de @${currentUser.name}`;
+                    `Reviews by @${currentUser.name}`;
 
                 const storedUser =
                     JSON.parse(
@@ -1095,7 +1095,7 @@
                 showMessage(
                     nameMessage,
                     'success',
-                    'Nombre actualizado correctamente.'
+                    'Name updated successfully.'
                 );
 
                 await loadUserPublications();
@@ -1105,7 +1105,7 @@
                 showMessage(
                     nameMessage,
                     'error',
-                    'No se pudo conectar con el servidor.'
+                    'Could not connect to the server.'
                 );
 
             } finally {
@@ -1138,7 +1138,7 @@
                 showMessage(
                     passwordMessage,
                     'error',
-                    'Debes ingresar tu contraseña actual.'
+                    'You must enter your current password.'
                 );
                 return;
             }
@@ -1159,7 +1159,7 @@
                 showMessage(
                     passwordMessage,
                     'error',
-                    'Las contraseñas nuevas no coinciden.'
+                    'The new passwords do not match.'
                 );
                 return;
             }
@@ -1168,7 +1168,7 @@
                 showMessage(
                     passwordMessage,
                     'error',
-                    'La nueva contraseña debe ser distinta de la contraseña actual.'
+                    'The new password must be different from the current password.'
                 );
                 return;
             }
@@ -1209,7 +1209,7 @@
                         passwordMessage,
                         'error',
                         errorMessage ||
-                        'No se pudo cambiar la contraseña.'
+                        'Unable to change the password.'
                     );
 
                     return;
@@ -1218,7 +1218,7 @@
                 logoutLocal();
 
                 alert(
-                    'Contraseña actualizada correctamente. Debes iniciar sesión nuevamente.'
+                    'Password updated successfully. You must log in again.'
                 );
 
                 window.location.href = '/';
@@ -1228,7 +1228,7 @@
                 showMessage(
                     passwordMessage,
                     'error',
-                    'No se pudo conectar con el servidor.'
+                    'Could not connect to the server.'
                 );
 
             } finally {
