@@ -19,6 +19,7 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
         public readonly string $userName = 'usuario',
         public readonly bool $likedByCurrentUser = false,
         public readonly ?array $comments = null,
+        public readonly int $commentsCount = 0,
     ) {
     }
 
@@ -39,6 +40,7 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             likedByCurrentUser: $publication->relationLoaded('likes')
                 && $publication->likes->isNotEmpty(),
             comments: $publication->relationLoaded('comments') ? $publication->comments->map(fn($c) => CommentResponseDto::fromModel($c))->toArray() : null,
+            commentsCount: (int) ($publication->comments_count ?? 0),
         );
     }
 
@@ -56,6 +58,7 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
 
         $data['userName'] = $this->userName;
         $data['likedByCurrentUser'] = $this->likedByCurrentUser;
+        $data['commentsCount'] = $this->commentsCount;
 
         if ($this->comments !== null) {
             $data['comments'] = $this->comments;

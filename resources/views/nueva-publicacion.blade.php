@@ -293,6 +293,12 @@
             font-size: 1.15rem;
         }
 
+        .publication-message-box p {
+            margin: -0.55rem 0 1.25rem;
+            color: #475569;
+            line-height: 1.45;
+        }
+
         .publication-message-button {
             width: 100%;
             min-height: 42px;
@@ -389,10 +395,11 @@
     </div>
 </div>
 
-<div class="publication-message-modal" id="publicationSuccessModal" role="dialog" aria-modal="true" aria-labelledby="publicationSuccessTitle">
+<div class="publication-message-modal" id="publicationMessageModal" role="dialog" aria-modal="true" aria-labelledby="publicationMessageTitle">
     <div class="publication-message-box">
-        <h2 id="publicationSuccessTitle">Publication created successfully</h2>
-        <button type="button" class="publication-message-button" id="publicationSuccessButton">Accept</button>
+        <h2 id="publicationMessageTitle">Publication</h2>
+        <p id="publicationMessageText"></p>
+        <button type="button" class="publication-message-button" id="publicationMessageButton">Accept</button>
     </div>
 </div>
 
@@ -404,15 +411,26 @@
     const imageDropzone = document.getElementById('imageDropzone');
     const imagePreview = document.getElementById('imagePreview');
     const imagePlaceholder = document.getElementById('imagePlaceholder');
-    const publicationSuccessModal = document.getElementById('publicationSuccessModal');
-    const publicationSuccessButton = document.getElementById('publicationSuccessButton');
+    const publicationMessageModal = document.getElementById('publicationMessageModal');
+    const publicationMessageTitle = document.getElementById('publicationMessageTitle');
+    const publicationMessageText = document.getElementById('publicationMessageText');
+    const publicationMessageButton = document.getElementById('publicationMessageButton');
+    let publicationMessageRedirect = null;
 
-    function showPublicationSuccess() {
-        publicationSuccessModal.classList.add('is-open');
+    function showPublicationMessage(message, redirect = null) {
+        publicationMessageRedirect = redirect;
+        publicationMessageTitle.textContent = redirect ? 'Publication created successfully' : 'Publication notice';
+        publicationMessageText.textContent = message;
+        publicationMessageText.style.display = message ? 'block' : 'none';
+        publicationMessageModal.classList.add('is-open');
     }
 
-    publicationSuccessButton.addEventListener('click', () => {
-        window.location.href = '/';
+    publicationMessageButton.addEventListener('click', () => {
+        publicationMessageModal.classList.remove('is-open');
+
+        if (publicationMessageRedirect) {
+            window.location.href = publicationMessageRedirect;
+        }
     });
 
     function showImagePreview(file) {
@@ -518,12 +536,7 @@
             logged.style.display='flex';
             logged.innerHTML = '<button type="button" class="btn btn-cancel" id="cancelBtn">Cancel</button><button type="button" class="btn btn-publish" id="publishBtn">Publish</button>';
             document.getElementById('cancelBtn').addEventListener('click', ()=>{
-                document.getElementById('publication-card').querySelectorAll('input,textarea').forEach(i=>i.value='');
-                document.getElementById('ratingInput').value = '5';
-                document.getElementById('charsLeft').textContent = '255';
-                imageInput.value = '';
-                showImagePreview(null);
-                document.getElementById('selectedProductId').value = '';
+                window.location.href = '/';
             });
             document.getElementById('publishBtn').addEventListener('click', publish);
         }
@@ -535,7 +548,10 @@
         const productId = document.getElementById('selectedProductId').value;
         const rating = parseFloat(document.getElementById('ratingInput').value);
         const review = document.getElementById('reviewInput').value;
-        if (!productId) { alert('Select a product from the list.'); return; }
+        if (!productId) {
+            showPublicationMessage('Select a product from the list.');
+            return;
+        }
         const token = localStorage.getItem('jwtToken');
         if (!token) { abrirPanel(); return; }
         try{
@@ -546,12 +562,12 @@
             });
             if (res.status === 201) {
                 await res.json();
-                showPublicationSuccess();
+                showPublicationMessage('', '/');
             } else {
                 const err = await res.json();
-                alert('Error: ' + (err.message || JSON.stringify(err)));
+                showPublicationMessage('Error: ' + (err.message || JSON.stringify(err)));
             }
-        } catch(e){ alert('Error connecting to the API'); }
+        } catch(e){ showPublicationMessage('Error connecting to the API'); }
     }
 
     // Refresh actions if user logs in/out in another tab
