@@ -13,7 +13,9 @@ class CommentRepository implements ICommentRepository
      */
     public function getAll(): Collection
     {
-        return Comment::all();
+        return Comment::with('user')
+            ->latest('created_at')
+            ->get();
     }
 
     /**
@@ -21,7 +23,7 @@ class CommentRepository implements ICommentRepository
      */
     public function findById(int $id): ?Comment
     {
-        return Comment::find($id);
+        return Comment::with('user')->find($id);
     }
 
     /**
@@ -29,7 +31,9 @@ class CommentRepository implements ICommentRepository
      */
     public function getByPublicationId(int $publicationId): Collection
     {
-        return Comment::where('publicationId', $publicationId)
+        return Comment::with('user')
+            ->where('publicationId', $publicationId)
+            ->latest('created_at')
             ->get();
     }
 
@@ -38,7 +42,9 @@ class CommentRepository implements ICommentRepository
      */
     public function getByUserId(int $userId): Collection
     {
-        return Comment::where('userId', $userId)
+        return Comment::with('user')
+            ->where('userId', $userId)
+            ->latest('created_at')
             ->get();
     }
 
@@ -47,7 +53,9 @@ class CommentRepository implements ICommentRepository
      */
     public function create(array $data): Comment
     {
-        return Comment::create($data);
+        $comment = Comment::create($data);
+
+        return $comment->load('user');
     }
 
     /**
@@ -58,7 +66,7 @@ class CommentRepository implements ICommentRepository
         $comment = Comment::findOrFail($id);
         $comment->update($data);
 
-        return $comment;
+        return $comment->load('user');
     }
 
     /**
