@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Recuperar contraseña - Sans Inc</title>
+    <title>Recover Password - Sans Inc</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * {
@@ -186,12 +186,12 @@
 <x-login-panel>
     <form data-login-form>
         <div class="panel-message" data-login-message></div>
-        <input type="email" name="email" class="panel-input" placeholder="Correo electrónico" required />
-        <input type="password" name="password" class="panel-input" placeholder="Contraseña" required />
+        <input type="email" name="email" class="panel-input" placeholder="Email" required />
+        <input type="password" name="password" class="panel-input" placeholder="Password" required />
 
-        <button type="submit" class="btn-login" data-login-submit>Iniciar Sesión</button>
-        <a href="/register" class="btn-register">Registrarse</a>
-        <a href="/recuperar" class="panel-recover">Recuperar contraseña</a>
+        <button type="submit" class="btn-login" data-login-submit>Log In</button>
+        <a href="/register" class="btn-register">Sign Up</a>
+        <a href="/recuperar" class="panel-recover">Forgot password</a>
     </form>
 </x-login-panel>
 
@@ -207,22 +207,22 @@
                 </svg>
             </div>
 
-            <h1>Recuperar contraseña</h1>
-            <p>Ingresa el correo electrónico asociado a tu cuenta y te enviaremos un código para cambiar tu contraseña.</p>
+            <h1>Recover Password</h1>
+            <p>Enter the email associated with your account and we'll send you a code to change your password.</p>
 
             <div class="recover-message" data-request-message></div>
 
             <form data-request-form>
                 <div class="recover-field">
-                    <label for="recover-email">Correo electrónico</label>
-                    <input type="email" id="recover-email" name="email" class="recover-input" placeholder="correo@ejemplo.com" required />
+                    <label for="recover-email">Email</label>
+                    <input type="email" id="recover-email" name="email" class="recover-input" placeholder="email@example.com" required />
                 </div>
 
-                <button type="submit" class="btn-recover" data-request-submit>Enviar correo de recuperación</button>
+                <button type="submit" class="btn-recover" data-request-submit>Send recovery email</button>
             </form>
 
-            <button type="button" class="recover-link" data-goto-reset hidden>Ya tengo un código</button>
-            <a href="/" class="recover-back">Volver atrás</a>
+            <button type="button" class="recover-link" data-goto-reset hidden>I already have a code</button>
+            <a href="/" class="recover-back">Go back</a>
         </div>
 
         {{-- Paso 2: ingresar código y nueva contraseña --}}
@@ -234,8 +234,8 @@
                 </svg>
             </div>
 
-            <h1>Restablecer contraseña</h1>
-            <p>Revisa tu correo e ingresa el código de 6 dígitos junto con tu nueva contraseña.</p>
+            <h1>Reset Password</h1>
+            <p>Check your email and enter the 6-digit code along with your new password.</p>
 
             <div class="recover-message" data-reset-message></div>
 
@@ -243,24 +243,24 @@
                 <input type="hidden" name="email" data-reset-email />
 
                 <div class="recover-field">
-                    <label for="recover-code">Código de verificación</label>
+                    <label for="recover-code">Verification code</label>
                     <input type="text" id="recover-code" name="code" class="recover-input" placeholder="123456" inputmode="numeric" maxlength="6" required />
                 </div>
 
                 <div class="recover-field">
-                    <label for="recover-password">Nueva contraseña</label>
-                    <input type="password" id="recover-password" name="password" class="recover-input" placeholder="Nueva contraseña" required />
+                    <label for="recover-password">New password</label>
+                    <input type="password" id="recover-password" name="password" class="recover-input" placeholder="New password" required />
                 </div>
 
                 <div class="recover-field">
-                    <label for="recover-password-confirmation">Confirmar contraseña</label>
-                    <input type="password" id="recover-password-confirmation" name="password_confirmation" class="recover-input" placeholder="Confirmar contraseña" required />
+                    <label for="recover-password-confirmation">Confirm password</label>
+                    <input type="password" id="recover-password-confirmation" name="password_confirmation" class="recover-input" placeholder="Confirm password" required />
                 </div>
 
-                <button type="submit" class="btn-recover" data-reset-submit>Restablecer contraseña</button>
+                <button type="submit" class="btn-recover" data-reset-submit>Reset password</button>
             </form>
 
-            <button type="button" class="recover-back" data-back-to-request>Volver atrás</button>
+            <button type="button" class="recover-back" data-back-to-request>Go back</button>
         </div>
 
         {{-- Paso 3: confirmación --}}
@@ -271,10 +271,10 @@
                 </svg>
             </div>
 
-            <h1>Contraseña actualizada</h1>
-            <p>Tu contraseña fue restablecida correctamente. Ya puedes iniciar sesión con tu nueva contraseña.</p>
+            <h1>Password Updated</h1>
+            <p>Your password has been reset successfully. You can now log in with your new password.</p>
 
-            <a href="/" class="btn-recover" style="display:block; text-decoration:none; line-height: 1.4;">Volver al inicio</a>
+            <a href="/" class="btn-recover" style="display:block; text-decoration:none; line-height: 1.4;">Back to home</a>
         </div>
 
     </section>
@@ -318,12 +318,12 @@
 
         if (!EMAIL_PATTERN.test(email)) {
             message.className = 'recover-message is-error';
-            message.textContent = 'Ingresa un correo electrónico con un formato válido.';
+            message.textContent = 'Enter a valid email address.';
             return;
         }
 
         submit.disabled = true;
-        submit.textContent = 'Enviando...';
+        submit.textContent = 'Sending...';
 
         try {
             const response = await fetch('/api/auth/forgot-password', {
@@ -341,19 +341,19 @@
                 resetForm.querySelector('[data-reset-email]').value = email;
 
                 message.className = 'recover-message is-success';
-                message.textContent = 'Si el correo está registrado, recibirás un código de verificación en tu bandeja de entrada.';
+                message.textContent = 'If the email is registered, you will receive a verification code in your inbox.';
                 document.querySelector('[data-goto-reset]').hidden = false;
                 return;
             }
 
             message.className = 'recover-message is-error';
-            message.textContent = firstValidationError(data) || data.message || 'No se pudo enviar el correo de recuperación.';
+            message.textContent = firstValidationError(data) || data.message || 'Unable to send the recovery email.';
         } catch (error) {
             message.className = 'recover-message is-error';
-            message.textContent = 'No se pudo conectar con el servidor.';
+            message.textContent = 'Could not connect to the server.';
         } finally {
             submit.disabled = false;
-            submit.textContent = 'Enviar correo de recuperación';
+            submit.textContent = 'Send recovery email';
         }
     });
 
@@ -373,12 +373,12 @@
 
         if (password !== password_confirmation) {
             message.className = 'recover-message is-error';
-            message.textContent = 'Las contraseñas no coinciden.';
+            message.textContent = 'Passwords do not match.';
             return;
         }
 
         submit.disabled = true;
-        submit.textContent = 'Restableciendo...';
+        submit.textContent = 'Resetting...';
 
         try {
             const response = await fetch('/api/auth/reset-password', {
@@ -398,18 +398,18 @@
 
             if (response.status === 400) {
                 message.className = 'recover-message is-error';
-                message.textContent = 'El código ingresado es incorrecto o ha expirado.';
+                message.textContent = 'The code entered is incorrect or has expired.';
                 return;
             }
 
             message.className = 'recover-message is-error';
-            message.textContent = firstValidationError(data) || data.message || 'No se pudo restablecer la contraseña.';
+            message.textContent = firstValidationError(data) || data.message || 'Unable to reset the password.';
         } catch (error) {
             message.className = 'recover-message is-error';
-            message.textContent = 'No se pudo conectar con el servidor.';
+            message.textContent = 'Could not connect to the server.';
         } finally {
             submit.disabled = false;
-            submit.textContent = 'Restablecer contraseña';
+            submit.textContent = 'Reset password';
         }
     });
 </script>

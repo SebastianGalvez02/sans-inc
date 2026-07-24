@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nueva publicación - Sans Inc</title>
+    <title>New Publication - Sans Inc</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         html,
@@ -273,41 +273,41 @@
 <x-login-panel>
     <form data-login-form>
         <div class="panel-message" data-login-message></div>
-        <input type="email" name="email" class="panel-input" placeholder="Correo electrónico" required />
-        <input type="password" name="password" class="panel-input" placeholder="Contraseña" required />
+        <input type="email" name="email" class="panel-input" placeholder="Email" required />
+        <input type="password" name="password" class="panel-input" placeholder="Password" required />
 
-        <button type="submit" class="btn-login" data-login-submit>Iniciar Sesión</button>
-        <a href="/register" class="btn-register">Registrarse</a>
-        <a href="/recuperar" class="panel-recover">Recuperar contraseña</a>
+        <button type="submit" class="btn-login" data-login-submit>Log In</button>
+        <a href="/register" class="btn-register">Sign Up</a>
+        <a href="/recuperar" class="panel-recover">Forgot password</a>
     </form>
 </x-login-panel>
 
 <div class="page">
-    <h1 class="page-title">Nueva publicación</h1>
+    <h1 class="page-title">New Publication</h1>
 
     <div class="publication-rect" id="publication-card">
             <div class="publication-section">
-                <label>Subir imagen</label>
+                <label>Upload image</label>
                 <div class="image-dropzone" id="imageDropzone">
                     <div class="image-placeholder" id="imagePlaceholder">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 16V8m0 0-3 3m3-3 3 3M4 16.5A4.5 4.5 0 0 1 8.5 12h.5A6 6 0 0 1 19 9.5 4.5 4.5 0 0 1 18.5 18H8.5A4.5 4.5 0 0 1 4 13.5Z" />
                         </svg>
-                        <p class="small">Haz clic o arrastra una imagen aquí</p>
+                        <p class="small">Click or drag an image here</p>
                         <p class="small">PNG, JPG, WEBP</p>
                     </div>
-                    <img id="imagePreview" alt="Vista previa" style="display:none;" />
+                    <img id="imagePreview" alt="Preview" style="display:none;" />
                     <div class="image-change-overlay" id="imageChangeOverlay">
-                        <span>Cambiar imagen</span>
+                        <span>Change image</span>
                     </div>
                     <input type="file" id="imageInput" accept="image/*" hidden />
                 </div>
             </div>
 
             <div class="publication-section">
-                <label for="productInput">Producto</label>
+                <label for="productInput">Product</label>
                 <div class="suggestions">
-                    <input type="text" id="productInput" autocomplete="off" class="publication-control" placeholder="Escribe para buscar..." />
+                    <input type="text" id="productInput" autocomplete="off" class="publication-control" placeholder="Type to search..." />
                     <div id="suggestions" class="suggestions-list" style="display:none"></div>
                 </div>
                 <input type="hidden" id="selectedProductId" />
@@ -319,9 +319,9 @@
             </div>
 
             <div class="publication-section">
-                <label for="reviewInput">Reseña</label>
+                <label for="reviewInput">Review</label>
                 <textarea id="reviewInput" class="publication-control" rows="5" maxlength="255" style="resize:vertical;"></textarea>
-                <div class="small" style="text-align:right; width:100%;"><span id="charsLeft">255</span> caracteres restantes</div>
+                <div class="small" style="text-align:right; width:100%;"><span id="charsLeft">255</span> characters remaining</div>
             </div>
 
             <div class="actions">
@@ -436,12 +436,12 @@
         const notLogged = document.getElementById('notLoggedActions');
         const logged = document.getElementById('loggedActions');
         if (!token) {
-            notLogged.innerHTML = '<button type="button" class="btn-login-inline" onclick="abrirPanel()">Iniciar Sesión</button>';
+            notLogged.innerHTML = '<button type="button" class="btn-login-inline" onclick="abrirPanel()">Log In</button>';
             logged.style.display='none';
         } else {
             notLogged.innerHTML = '';
             logged.style.display='flex';
-            logged.innerHTML = '<button type="button" class="btn btn-cancel" id="cancelBtn">Cancelar</button><button type="button" class="btn btn-publish" id="publishBtn">Publicar</button>';
+            logged.innerHTML = '<button type="button" class="btn btn-cancel" id="cancelBtn">Cancel</button><button type="button" class="btn btn-publish" id="publishBtn">Publish</button>';
             document.getElementById('cancelBtn').addEventListener('click', ()=>{
                 document.getElementById('publication-card').querySelectorAll('input,textarea').forEach(i=>i.value='');
                 document.getElementById('ratingInput').value = '5';
@@ -460,7 +460,7 @@
         const productId = document.getElementById('selectedProductId').value;
         const rating = parseFloat(document.getElementById('ratingInput').value);
         const review = document.getElementById('reviewInput').value;
-        if (!productId) { alert('Selecciona un producto de la lista.'); return; }
+        if (!productId) { alert('Select a product from the list.'); return; }
         const token = localStorage.getItem('jwtToken');
         if (!token) { abrirPanel(); return; }
         try{
@@ -471,13 +471,13 @@
             });
             if (res.status === 201) {
                 const data = await res.json();
-                alert('Publicación creada correctamente');
+                alert('Publication created successfully');
                 window.location.href = '/';
             } else {
                 const err = await res.json();
                 alert('Error: ' + (err.message || JSON.stringify(err)));
             }
-        } catch(e){ alert('Error al conectar con la API'); }
+        } catch(e){ alert('Error connecting to the API'); }
     }
 
     // Refresh actions if user logs in/out in another tab

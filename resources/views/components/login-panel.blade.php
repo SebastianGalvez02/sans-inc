@@ -11,7 +11,7 @@
 
 <div id="login-panel" class="sans-login-panel">
     <div class="panel-header">
-        <button type="button" class="panel-close" onclick="cerrarPanel()" aria-label="Cerrar">&#x2715;</button>
+        <button type="button" class="panel-close" onclick="cerrarPanel()" aria-label="Close">&#x2715;</button>
     </div>
 
     <div class="panel-logo">
@@ -232,7 +232,7 @@
 
         if (submit) {
             submit.disabled = true;
-            submit.textContent = 'Iniciando...';
+            submit.textContent = 'Logging in...';
         }
 
         try {
@@ -265,7 +265,7 @@
                 return;
             }
 
-            const fallback = 'No se pudo iniciar sesión.';
+            const fallback = 'Unable to log in.';
             const text = data.message || fallback;
 
             if (message) {
@@ -275,7 +275,7 @@
                 alert(text);
             }
         } catch (error) {
-            const text = 'No se pudo conectar con el servidor.';
+            const text = 'Could not connect to the server.';
 
             if (message) {
                 message.className = 'panel-message is-error';
@@ -286,7 +286,7 @@
         } finally {
             if (submit) {
                 submit.disabled = false;
-                submit.textContent = 'Iniciar Sesión';
+                submit.textContent = 'Log In';
             }
         }
     });

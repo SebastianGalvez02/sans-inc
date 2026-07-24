@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registro confirmado - Sans Inc</title>
+    <title>Registration Confirmed - Sans Inc</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * {
@@ -67,20 +67,20 @@
 <x-login-panel>
     <form data-login-form>
         <div class="panel-message" data-login-message></div>
-        <input type="email" name="email" class="panel-input" placeholder="Correo electrónico" required />
-        <input type="password" name="password" class="panel-input" placeholder="Contraseña" required />
+        <input type="email" name="email" class="panel-input" placeholder="Email" required />
+        <input type="password" name="password" class="panel-input" placeholder="Password" required />
 
-        <button type="submit" class="btn-login" data-login-submit>Iniciar Sesión</button>
-        <a href="/register" class="btn-register">Registrarse</a>
-        <a href="/recuperar" class="panel-recover">Recuperar contraseña</a>
+        <button type="submit" class="btn-login" data-login-submit>Log In</button>
+        <a href="/register" class="btn-register">Sign Up</a>
+        <a href="/recuperar" class="panel-recover">Forgot password</a>
     </form>
 </x-login-panel>
 
 <main class="confirmed-page">
     <section class="confirmed-card">
-        <h1>Registro confirmado</h1>
-        <p>Tu correo fue verificado correctamente. Ya puedes iniciar sesión.</p>
-        <a href="/">Volver al inicio</a>
+        <h1>Registration Confirmed</h1>
+        <p>Your email has been verified successfully. You can now log in.</p>
+        <a href="/">Back to home</a>
     </section>
 </main>
 

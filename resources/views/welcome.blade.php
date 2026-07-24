@@ -373,26 +373,26 @@
 <x-login-panel>
     <form data-login-form>
         <div class="panel-message" data-login-message></div>
-        <input type="email" name="email" class="panel-input" placeholder="Correo electrónico" required />
-        <input type="password" name="password" class="panel-input" placeholder="Contraseña" required />
+        <input type="email" name="email" class="panel-input" placeholder="Email" required />
+        <input type="password" name="password" class="panel-input" placeholder="Password" required />
 
-        <button type="submit" class="btn-login" data-login-submit>Iniciar Sesión</button>
-        <a href="/register" class="btn-register">Registrarse</a>
-        <a href="/recuperar" class="panel-recover">Recuperar contraseña</a>
+        <button type="submit" class="btn-login" data-login-submit>Log In</button>
+        <a href="/register" class="btn-register">Sign Up</a>
+        <a href="/recuperar" class="panel-recover">Forgot password</a>
     </form>
 </x-login-panel>
 
 <main class="feed-page">
     <div class="feed-toolbar">
-        <h1 class="feed-title">Feed de Reseñas</h1>
+        <h1 class="feed-title">Reviews Feed</h1>
 
         <div class="feed-actions">
-            <div class="view-toggle" aria-label="Cambiar vista">
+            <div class="view-toggle" aria-label="Change view">
                 <button type="button" class="is-active" id="listViewButton">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
                     </svg>
-                    Lista
+                    List
                 </button>
                 <button type="button" id="gridViewButton">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -401,7 +401,7 @@
                         <rect x="3" y="14" width="7" height="7" rx="1" />
                         <rect x="14" y="14" width="7" height="7" rx="1" />
                     </svg>
-                    Viñetas
+                    Grid
                 </button>
             </div>
 
@@ -409,28 +409,28 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h18M6 12h12M10 19h4" />
                 </svg>
-                Filtro
+                Filter
             </button>
         </div>
     </div>
 
     <div class="active-filter-bar" id="activeFilterBar">
-        <span>Resultados para: <strong id="activeFilterName"></strong></span>
-        <button type="button" id="clearFilterButton">Quitar búsqueda ✕</button>
+        <span>Results for: <strong id="activeFilterName"></strong></span>
+        <button type="button" id="clearFilterButton">Clear search ✕</button>
     </div>
 
     <div id="feedList" class="feed-list"></div>
-    <div id="emptyFeed" class="empty-feed">No hay publicaciones disponibles.</div>
-    <div id="feedError" class="feed-error">No se pudieron cargar las publicaciones.</div>
+    <div id="emptyFeed" class="empty-feed">No publications available.</div>
+    <div id="feedError" class="feed-error">Publications could not be loaded.</div>
 </main>
 
 <x-footer />
 
 <div class="login-required-modal" id="loginRequiredModal" role="dialog" aria-modal="true" aria-labelledby="loginRequiredTitle">
     <div class="login-required-box">
-        <h2 id="loginRequiredTitle">Inicie sesión antes</h2>
-        <p>Debes iniciar sesión para dar like a una publicación.</p>
-        <button type="button" id="loginRequiredButton">Iniciar Sesión</button>
+        <h2 id="loginRequiredTitle">Please log in first</h2>
+        <p>You must log in to like a publication.</p>
+        <button type="button" id="loginRequiredButton">Log In</button>
     </div>
 </div>
 
@@ -461,28 +461,28 @@
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return 'Fecha no disponible';
+            return 'Date not available';
         }
 
         const seconds = Math.max(1, Math.floor((Date.now() - date.getTime()) / 1000));
         const units = [
-            ['año', 31536000],
-            ['mes', 2592000],
-            ['semana', 604800],
-            ['día', 86400],
-            ['hora', 3600],
-            ['minuto', 60],
+            ['year', 31536000],
+            ['month', 2592000],
+            ['week', 604800],
+            ['day', 86400],
+            ['hour', 3600],
+            ['minute', 60],
         ];
 
         for (const [label, amount] of units) {
             const count = Math.floor(seconds / amount);
 
             if (count >= 1) {
-                return `Hace ${count} ${label}${count === 1 ? '' : 's'}`;
+                return `${count} ${label}${count === 1 ? '' : 's'} ago`;
             }
         }
 
-        return 'Hace unos segundos';
+        return 'A few seconds ago';
     }
 
     function buildProductMap(products) {
@@ -511,7 +511,7 @@
             return storedUser.name;
         }
 
-        return `usuario_${publication.userId}`;
+        return `user_${publication.userId}`;
     }
 
     function showLoginRequired() {
@@ -569,7 +569,7 @@
             publication.numberOfLikes = Number(data.numberOfLikes);
             updateLikeButton(button, publication.likedByCurrentUser, publication.numberOfLikes);
         } catch (error) {
-            alert('No se pudo actualizar el like. Inténtalo nuevamente.');
+            alert('Unable to update the like. Please try again.');
         } finally {
             button.disabled = false;
         }
@@ -580,7 +580,7 @@
         emptyFeed.style.display = publications.length ? 'none' : 'block';
 
         publications.forEach((publication) => {
-            const productName = productsById[publication.productId] || `Producto #${publication.productId}`;
+            const productName = productsById[publication.productId] || `Product #${publication.productId}`;
             const userName = getPublicationUserName(publication);
             const card = document.createElement('article');
             card.className = 'publication-card';
@@ -590,12 +590,12 @@
                     <p class="publication-date">${escapeHtml(formatRelativeDate(publication.publicationDate))}</p>
                 </div>
 
-                <div class="publication-image-placeholder">aún no disponible</div>
+                <div class="publication-image-placeholder">not yet available</div>
 
                 <div class="publication-content">
                     <div class="publication-heading">
                         <h2 class="publication-title">${escapeHtml(productName)}</h2>
-                        <div class="publication-rating" aria-label="Rating ${escapeHtml(Number(publication.rating).toFixed(1))} de 5">
+                        <div class="publication-rating" aria-label="Rating ${escapeHtml(Number(publication.rating).toFixed(1))} of 5">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 2.5l2.9 5.88 6.49.94-4.7 4.58 1.11 6.46L12 17.31l-5.8 3.05 1.11-6.46-4.7-4.58 6.49-.94L12 2.5Z" />
                             </svg>
@@ -721,7 +721,7 @@
         const nombre = params.get('nombre');
 
         currentFilterProductId = productId;
-        setFilterUi(productId ? { id: productId, name: nombre || `Producto #${productId}` } : null);
+        setFilterUi(productId ? { id: productId, name: nombre || `Product #${productId}` } : null);
         loadPublications(productId);
     });
 
@@ -732,7 +732,7 @@
 
         if (productId) {
             currentFilterProductId = productId;
-            setFilterUi({ id: productId, name: nombre || `Producto #${productId}` });
+            setFilterUi({ id: productId, name: nombre || `Product #${productId}` });
             loadPublications(productId);
         } else {
             loadPublications();
