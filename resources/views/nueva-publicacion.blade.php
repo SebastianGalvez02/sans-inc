@@ -6,9 +6,17 @@
     <title>Nueva publicación - Sans Inc</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        html,
         body {
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
             background-color: #f0f0f0;
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
@@ -18,9 +26,11 @@
         }
 
         .page {
-            max-width: 980px;
+            width: 100%;
+             max-width: 980px;
             margin: 2.75rem auto 3rem;
             padding: 0 1rem;
+            flex: 1;
         }
 
         .page-title {
@@ -320,6 +330,9 @@
             </div>
     </div>
 </div>
+
+<x-footer />
+
 
 <script>
     const imageInput = document.getElementById('imageInput');

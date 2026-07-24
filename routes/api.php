@@ -83,6 +83,7 @@ Route::middleware('auth.jwt')->group(function () {
     Route::put('/publications/{id}', [PublicationController::class, 'update']);
     Route::patch('/publications/{id}', [PublicationController::class, 'update']);
     Route::delete('/publications/{id}', [PublicationController::class, 'destroy']);
+    Route::post('/publications/{id}/like', [PublicationController::class, 'toggleLike']);
 });
 
 Route::middleware(['auth.jwt', 'client'])->group(function () {

@@ -1,6 +1,5 @@
 @props([
     'homeUrl' => '/',
-    'searchUrl' => '/buscar',
     'publishUrl' => '/publicar',
     'agendaUrl' => '/agenda',
 ])
@@ -15,12 +14,19 @@
             </svg>
         </a>
 
-        <a href="{{ $searchUrl }}" class="sans-navbar__icon" title="Buscar" aria-label="Buscar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                <circle cx="11" cy="11" r="6" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
-            </svg>
-        </a>
+        <div class="sans-navbar__search" id="navbarSearch">
+            <button type="button" class="sans-navbar__icon" id="navbarSearchToggle" title="Buscar" aria-label="Buscar" aria-haspopup="true" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="11" cy="11" r="6" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
+                </svg>
+            </button>
+
+            <div class="sans-navbar__search-panel" id="navbarSearchPanel">
+                <input type="text" id="navbarSearchInput" class="sans-navbar__search-input" placeholder="Buscar producto..." autocomplete="off" />
+                <div id="navbarSearchSuggestions" class="sans-navbar__search-suggestions"></div>
+            </div>
+        </div>
 
         <a href="{{ $publishUrl }}" class="sans-navbar__icon" title="Publicar" aria-label="Publicar">
             <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -93,12 +99,84 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
         text-decoration: none;
         transition: color 0.2s;
     }
 
     .sans-navbar__icon:hover {
         color: #ffffff;
+    }
+
+    .sans-navbar__search {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .sans-navbar__search-panel {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: calc(100% + 14px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(320px, 90vw);
+        z-index: 150;
+    }
+
+    .sans-navbar__search-panel.is-open {
+        display: flex;
+    }
+
+    .sans-navbar__search-input {
+        width: 100%;
+        padding: 0.65rem 0.85rem;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 0.92rem;
+        font-family: inherit;
+        color: #0f1b33;
+        background: #ffffff;
+        outline: none;
+    }
+
+    .sans-navbar__search-input:focus {
+        border-color: #315df4;
+        box-shadow: 0 0 0 3px rgba(49, 93, 244, 0.18);
+    }
+
+    .sans-navbar__search-suggestions {
+        display: none;
+        margin-top: 0.5rem;
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        max-height: 220px;
+        overflow-y: auto;
+        text-align: left;
+        box-shadow: 0 12px 28px rgba(15, 27, 51, 0.2);
+    }
+
+    .sans-navbar__search-item {
+        padding: 0.75rem 0.95rem;
+        font-size: 0.92rem;
+        color: #0f1b33;
+        cursor: pointer;
+    }
+
+    .sans-navbar__search-item:hover {
+        background: #f3f6ff;
+    }
+
+    .sans-navbar__search-empty {
+        padding: 0.75rem 0.95rem;
+        font-size: 0.88rem;
+        color: #64748b;
     }
 
     .sans-navbar__divider {
@@ -184,6 +262,13 @@
             padding: 0.6rem 0.75rem;
             font-size: 0.82rem;
         }
+
+        .sans-navbar__search-panel {
+            left: auto;
+            right: -1rem;
+            transform: none;
+            width: min(280px, 85vw);
+        }
     }
 </style>
 
@@ -224,4 +309,110 @@
     document.addEventListener('DOMContentLoaded', actualizarNavbar);
     window.addEventListener('storage', actualizarNavbar);
     window.addEventListener('sans-auth-changed', actualizarNavbar);
+
+    (function () {
+        const searchWrap = document.getElementById('navbarSearch');
+        const toggleBtn = document.getElementById('navbarSearchToggle');
+        const panel = document.getElementById('navbarSearchPanel');
+        const input = document.getElementById('navbarSearchInput');
+        const suggestionsEl = document.getElementById('navbarSearchSuggestions');
+        const homeUrl = '{{ $homeUrl }}';
+
+        if (!searchWrap) {
+            return;
+        }
+
+        let products = null;
+        let productsPromise = null;
+
+        function loadProducts() {
+            if (!productsPromise) {
+                productsPromise = fetch('/api/products')
+                    .then((r) => (r.ok ? r.json() : []))
+                    .then((data) => { products = Array.isArray(data) ? data : []; })
+                    .catch(() => { products = []; });
+            }
+
+            return productsPromise;
+        }
+
+        function renderSuggestions(query) {
+            const q = query.trim().toLowerCase();
+
+            if (!q || !products) {
+                suggestionsEl.style.display = 'none';
+                suggestionsEl.innerHTML = '';
+                return;
+            }
+
+            const matches = products
+                .filter((p) => (p.name || '').toLowerCase().includes(q))
+                .slice(0, 10);
+
+            suggestionsEl.innerHTML = '';
+
+            if (matches.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'sans-navbar__search-empty';
+                empty.textContent = 'Sin resultados';
+                suggestionsEl.appendChild(empty);
+                suggestionsEl.style.display = 'block';
+                return;
+            }
+
+            matches.forEach((product) => {
+                const item = document.createElement('div');
+                item.className = 'sans-navbar__search-item';
+                item.textContent = product.name;
+                item.addEventListener('click', () => {
+                    const id = product.productId ?? product.id;
+                    const name = product.name;
+
+                    if (typeof window.sansApplyProductFilter === 'function') {
+                        window.sansApplyProductFilter({ id, name });
+                        closeSearch();
+                    } else {
+                        window.location.href = `${homeUrl}?productId=${encodeURIComponent(id)}&nombre=${encodeURIComponent(name)}`;
+                    }
+                });
+                suggestionsEl.appendChild(item);
+            });
+
+            suggestionsEl.style.display = 'block';
+        }
+
+        function closeSearch() {
+            panel.classList.remove('is-open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            suggestionsEl.style.display = 'none';
+            suggestionsEl.innerHTML = '';
+            input.value = '';
+        }
+
+        function openSearch() {
+            panel.classList.add('is-open');
+            toggleBtn.setAttribute('aria-expanded', 'true');
+            loadProducts().then(() => renderSuggestions(input.value));
+            input.focus();
+        }
+
+        toggleBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            panel.classList.contains('is-open') ? closeSearch() : openSearch();
+        });
+
+        input.addEventListener('input', () => renderSuggestions(input.value));
+
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeSearch();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!searchWrap.contains(event.target)) {
+                closeSearch();
+            }
+        });
+    })();
 </script>
