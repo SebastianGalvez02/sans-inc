@@ -6,11 +6,11 @@
             <a
                 href="/"
                 class="sans-footer__brand-link"
-                aria-label="Ir al inicio de Sans Inc"
+                aria-label="Go to Sans Inc home"
             >
                 <img
                     src="{{ asset('images/LogoSans.jpeg') }}"
-                    alt="Logo de Sans Inc"
+                    alt="Sans Inc logo"
                     class="sans-footer__brand-image"
                 >
 
@@ -18,16 +18,16 @@
             </a>
 
             <p class="sans-footer__description">
-                Plataforma web de reseñas de productos.
+                Web platform for product reviews.
             </p>
         </div>
 
         {{-- Información de contacto --}}
         <div class="sans-footer__section">
-            <h2 class="sans-footer__title">Contacto</h2>
+            <h2 class="sans-footer__title">Contact</h2>
 
             <p class="sans-footer__item">
-                <span class="sans-footer__label">Teléfono</span>
+                <span class="sans-footer__label">Phone</span>
 
                 <a href="tel:+56978234591" class="sans-footer__link">
                     +56 9 7823 4591
@@ -35,7 +35,7 @@
             </p>
 
             <p class="sans-footer__item">
-                <span class="sans-footer__label">Correo electrónico</span>
+                <span class="sans-footer__label">Email</span>
 
                 <a
                     href="mailto:sans.inc.contacto@gmail.com"
@@ -53,15 +53,15 @@
 
         {{-- Dirección física --}}
         <div class="sans-footer__section">
-            <h2 class="sans-footer__title">Ubicación</h2>
+            <h2 class="sans-footer__title">Location</h2>
 
             <address class="sans-footer__address">
                 <strong>Universidad de Antofagasta (UA)</strong>
 
-                <span>Campus principal</span>
+                <span>Main campus</span>
 
                 <span>
-                    Subsuelo 69 – Av. Angamos 0610,
+                    Basement 69 – Av. Angamos 0610,
                     Antofagasta, Chile
                 </span>
 
@@ -76,10 +76,10 @@
     <div class="sans-footer__bottom">
         <p>
             &copy; {{ date('Y') }} Sans Inc.
-            Todos los derechos reservados.
+            All rights reserved.
         </p>
 
-        <p>Proyecto Integrador de Software</p>
+        <p>Software Capstone Project</p>
     </div>
 </footer>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Agendar hora - Sans Inc</title>
+    <title>Book Appointment - Sans Inc</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * {
@@ -302,19 +302,19 @@
 <x-login-panel>
     <form data-login-form>
         <div class="panel-message" data-login-message></div>
-        <input type="email" name="email" class="panel-input" placeholder="Correo electrónico" required />
-        <input type="password" name="password" class="panel-input" placeholder="Contraseña" required />
+        <input type="email" name="email" class="panel-input" placeholder="Email" required />
+        <input type="password" name="password" class="panel-input" placeholder="Password" required />
 
-        <button type="submit" class="btn-login" data-login-submit>Iniciar Sesión</button>
-        <a href="/register" class="btn-register">Registrarse</a>
-        <a href="/recuperar" class="panel-recover">Recuperar contraseña</a>
+        <button type="submit" class="btn-login" data-login-submit>Log In</button>
+        <a href="/register" class="btn-register">Sign Up</a>
+        <a href="/recuperar" class="panel-recover">Forgot password</a>
     </form>
 </x-login-panel>
 
 <main class="agenda-page">
     <section class="agenda-card" aria-labelledby="agenda-title">
-        <h1 class="agenda-title" id="agenda-title">Agendar Hora de Atención</h1>
-        <p class="agenda-subtitle">Complete el formulario para solicitar una cita</p>
+        <h1 class="agenda-title" id="agenda-title">Book an Appointment</h1>
+        <p class="agenda-subtitle">Fill out the form to request an appointment</p>
 
         <form id="agendaForm">
             <div id="agendaMessage" class="agenda-message"></div>
@@ -324,9 +324,9 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7h8M8 11h8M8 15h5M6 3h12a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V5a2 2 0 0 1 2-2Z" />
                     </svg>
-                    Motivo de la Cita
+                    Reason for the Appointment
                 </label>
-                <input class="agenda-input" id="reason" name="reason" type="text" maxlength="500" placeholder="Ingrese el motivo de la cita" required>
+                <input class="agenda-input" id="reason" name="reason" type="text" maxlength="500" placeholder="Enter the reason for the appointment" required>
             </div>
 
             <div class="agenda-field">
@@ -334,9 +334,9 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.57 2.61a2 2 0 0 1-.45 2.11L8 9.67a16 16 0 0 0 6.33 6.33l1.23-1.23a2 2 0 0 1 2.11-.45c.84.25 1.71.45 2.61.57A2 2 0 0 1 22 16.92Z" />
                     </svg>
-                    Teléfono
+                    Phone
                 </label>
-                <input class="agenda-input" id="phone" name="phone" type="tel" maxlength="20" placeholder="Ingrese su teléfono" required>
+                <input class="agenda-input" id="phone" name="phone" type="tel" maxlength="20" placeholder="Enter your phone number" required>
             </div>
 
             <div class="agenda-field">
@@ -345,33 +345,33 @@
                         <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="1.8" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 2v4M8 2v4M3 10h18" />
                     </svg>
-                    Fecha de la Cita
+                    Appointment Date
                 </div>
 
                 <div class="agenda-date-grid">
                     <div class="agenda-date-item">
-                        <span>Día</span>
+                        <span>Day</span>
                         <button type="button" class="agenda-select-button" id="dayButton">
-                            <span id="dayText">Día</span>
+                            <span id="dayText">Day</span>
                             <span>⌄</span>
                         </button>
                         <div class="agenda-dropdown" id="calendarDropdown">
                             <div class="calendar-head">
-                                <button type="button" class="calendar-nav" id="prevMonth" aria-label="Mes anterior">‹</button>
+                                <button type="button" class="calendar-nav" id="prevMonth" aria-label="Previous month">‹</button>
                                 <span id="calendarTitle"></span>
-                                <button type="button" class="calendar-nav" id="nextMonth" aria-label="Mes siguiente">›</button>
+                                <button type="button" class="calendar-nav" id="nextMonth" aria-label="Next month">›</button>
                             </div>
                             <div class="calendar-week">
-                                <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
                             </div>
                             <div class="calendar-grid" id="calendarGrid"></div>
                         </div>
                     </div>
 
                     <div class="agenda-date-item">
-                        <span>Hora</span>
+                        <span>Time</span>
                         <button type="button" class="agenda-select-button" id="timeButton">
-                            <span id="timeText">Hora</span>
+                            <span id="timeText">Time</span>
                             <span>⌄</span>
                         </button>
                         <div class="agenda-dropdown" id="timeDropdown">
@@ -381,7 +381,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="agenda-submit" id="agendaSubmit">Enviar Solicitud</button>
+            <button type="submit" class="agenda-submit" id="agendaSubmit">Submit Request</button>
         </form>
     </section>
 </main>
@@ -401,7 +401,7 @@
     const calendarTitle = document.getElementById('calendarTitle');
     const calendarGrid = document.getElementById('calendarGrid');
     const timeList = document.getElementById('timeList');
-    const monthNames = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+    const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
     const availableHours = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
     let calendarDate = new Date();
     let selectedDate = null;
@@ -466,7 +466,7 @@
                 selectedDate = date;
                 selectedTime = '';
                 dayText.textContent = formatDisplayDate(date);
-                timeText.textContent = 'Hora';
+                timeText.textContent = 'Time';
                 calendarDropdown.classList.remove('is-open');
                 renderCalendar();
                 loadBookedTimes();
@@ -527,7 +527,7 @@
         if (!selectedDate) {
             const empty = document.createElement('p');
             empty.className = 'time-empty';
-            empty.textContent = 'Selecciona primero un día.';
+            empty.textContent = 'Select a day first.';
             timeList.appendChild(empty);
             return;
         }
@@ -539,7 +539,7 @@
         if (freeHours.length === 0) {
             const empty = document.createElement('p');
             empty.className = 'time-empty';
-            empty.textContent = 'No hay horas disponibles para este día. Debe quedar en horas hábiles laborales de 10 a 18 horas.';
+            empty.textContent = 'No available time slots for this day. It must be within business hours, from 10 to 18.';
             timeList.appendChild(empty);
             return;
         }
@@ -600,17 +600,17 @@
 
         if (!token) {
             abrirPanel();
-            showAgendaMessage('error', 'Debes iniciar sesión para agendar una hora.');
+            showAgendaMessage('error', 'You must log in to book an appointment.');
             return;
         }
 
         if (!selectedDate || !selectedTime) {
-            showAgendaMessage('error', 'Selecciona un día y una hora disponible.');
+            showAgendaMessage('error', 'Select an available day and time.');
             return;
         }
 
         agendaSubmit.disabled = true;
-        agendaSubmit.textContent = 'Enviando...';
+        agendaSubmit.textContent = 'Sending...';
 
         try {
             const response = await fetch('/api/agenda', {
@@ -632,26 +632,26 @@
                 agendaForm.reset();
                 selectedDate = null;
                 selectedTime = '';
-                dayText.textContent = 'Día';
-                timeText.textContent = 'Hora';
+                dayText.textContent = 'Day';
+                timeText.textContent = 'Time';
                 bookedTimes = new Set();
                 renderCalendar();
                 renderTimes();
-                showAgendaMessage('success', 'Solicitud enviada correctamente.');
+                showAgendaMessage('success', 'Request submitted successfully.');
                 return;
             }
 
             if (data.errors) {
-                showAgendaMessage('error', Object.values(data.errors).flat()[0] || 'No se pudo agendar la hora.');
+                showAgendaMessage('error', Object.values(data.errors).flat()[0] || 'Unable to book the appointment.');
                 return;
             }
 
-            showAgendaMessage('error', data.message || 'No se pudo agendar la hora.');
+            showAgendaMessage('error', data.message || 'Unable to book the appointment.');
         } catch (error) {
-            showAgendaMessage('error', 'No se pudo conectar con el servidor.');
+            showAgendaMessage('error', 'Could not connect to the server.');
         } finally {
             agendaSubmit.disabled = false;
-            agendaSubmit.textContent = 'Enviar Solicitud';
+            agendaSubmit.textContent = 'Submit Request';
         }
     });
 

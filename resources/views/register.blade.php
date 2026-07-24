@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Crear cuenta - Sans Inc</title>
+    <title>Create Account - Sans Inc</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * {
@@ -165,12 +165,12 @@
 <x-login-panel>
     <form data-login-form>
         <div class="panel-message" data-login-message></div>
-        <input type="email" name="email" class="panel-input" placeholder="Correo electrónico" required />
-        <input type="password" name="password" class="panel-input" placeholder="Contraseña" required />
+        <input type="email" name="email" class="panel-input" placeholder="Email" required />
+        <input type="password" name="password" class="panel-input" placeholder="Password" required />
 
-        <button type="submit" class="btn-login" data-login-submit>Iniciar Sesión</button>
-        <a href="/register" class="btn-register">Registrarse</a>
-        <a href="/recuperar" class="panel-recover">Recuperar contraseña</a>
+        <button type="submit" class="btn-login" data-login-submit>Log In</button>
+        <a href="/register" class="btn-register">Sign Up</a>
+        <a href="/recuperar" class="panel-recover">Forgot password</a>
     </form>
 </x-login-panel>
 
@@ -181,29 +181,29 @@
         </div>
 
         <div class="register-heading">
-            <h1 id="register-title">Crear cuenta</h1>
-            <p>Únete a Sans Inc</p>
+            <h1 id="register-title">Create Account</h1>
+            <p>Join Sans Inc</p>
         </div>
 
         <form id="registerForm">
             <div id="registerMessage" class="register-message"></div>
 
             <div class="register-field">
-                <label for="name">Nombre</label>
-                <input id="name" name="name" type="text" maxlength="16" placeholder="Tu nombre completo" required>
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" maxlength="16" placeholder="Your full name" required>
             </div>
 
             <div class="register-field">
-                <label for="email">Correo electrónico</label>
-                <input id="email" name="email" type="email" maxlength="100" placeholder="correo@ejemplo.com" required>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" maxlength="100" placeholder="email@example.com" required>
             </div>
 
             <div class="register-field">
-                <label for="password">Contraseña</label>
-                <input id="password" name="password" type="password" placeholder="Mínimo 8 caracteres" required>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Minimum 8 characters" required>
             </div>
 
-            <button id="registerSubmit" class="register-submit" type="submit">Registrarse</button>
+            <button id="registerSubmit" class="register-submit" type="submit">Sign Up</button>
         </form>
     </section>
 </main>
@@ -226,7 +226,7 @@
 
         const password = document.getElementById('password').value;
         registerSubmit.disabled = true;
-        registerSubmit.textContent = 'Registrando...';
+        registerSubmit.textContent = 'Signing up...';
         registerMessage.className = 'register-message';
         registerMessage.textContent = '';
 
@@ -250,22 +250,22 @@
 
             if (response.ok) {
                 registerForm.reset();
-                showRegisterMessage('success', 'Cuenta creada. Revisa tu correo para confirmar el registro antes de iniciar sesión.');
+                showRegisterMessage('success', 'Account created. Check your email to confirm your registration before logging in.');
                 return;
             }
 
             if (data.errors) {
                 const firstError = Object.values(data.errors).flat()[0];
-                showRegisterMessage('error', firstError || 'No se pudo crear la cuenta.');
+                showRegisterMessage('error', firstError || 'Unable to create the account.');
                 return;
             }
 
-            showRegisterMessage('error', data.message || 'No se pudo crear la cuenta.');
+            showRegisterMessage('error', data.message || 'Unable to create the account.');
         } catch (error) {
-            showRegisterMessage('error', 'No se pudo conectar con el servidor.');
+            showRegisterMessage('error', 'Could not connect to the server.');
         } finally {
             registerSubmit.disabled = false;
-            registerSubmit.textContent = 'Registrarse';
+            registerSubmit.textContent = 'Sign Up';
         }
     });
 </script>
