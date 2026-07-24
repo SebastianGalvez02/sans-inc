@@ -1,0 +1,82 @@
+@startuml
+title Sans Inc - Modelo de Dominio
+
+skinparam entity {
+    BackgroundColor wheat
+    ArrowColor Coral
+}
+
+skinparam CircledCharacter {
+    FontColor white
+    FontStyle bold
+    Radius 10
+}
+
+skinparam CircledCharacterBackgroundColor<<E>> SeaGreen
+
+entity Rol <<E>> {
+  id
+  nombreRol
+  descripcion
+}
+
+entity Usuario <<E>> {
+  id
+  nombre
+  correo
+  contraseña
+  correoRecuperacion
+}
+
+entity Categoria <<E>> {
+  id
+  nombre
+  descripcion
+}
+
+entity Producto <<E>> {
+  id
+  nombre
+  descripcion
+  precio
+  etiqueta
+  activo
+}
+
+entity Publicacion <<E>> {
+  id
+  reseña
+  calificacion
+  fechaPublicacion
+  numeroLikes
+  activo
+}
+
+entity Comentario <<E>> {
+  id
+  comentario
+}
+
+entity MeGusta <<E>> {
+  id
+}
+
+entity Agenda <<E>> {
+  id
+  motivo
+  telefono
+  fechaAgendada
+  activo
+}
+
+Rol "1..1" -- "0..*" Usuario : Asigna
+Categoria "1..1" -- "0..*" Producto : Contiene
+Usuario "1..1" -- "0..*" Publicacion : Publica
+Producto "1..1" -- "0..*" Publicacion : Aparece en
+Usuario "1..1" -- "0..*" Comentario : Escribe
+Publicacion "1..1" -- "0..*" Comentario : Tiene
+Usuario "1..1" -- "0..*" MeGusta : Da
+Publicacion "1..1" -- "0..*" MeGusta : Recibe
+Usuario "1..1" -- "0..*" Agenda : Agenda
+
+@enduml

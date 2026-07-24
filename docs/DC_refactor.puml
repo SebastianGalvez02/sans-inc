@@ -6,81 +6,79 @@ skinparam class {
     ArrowColor Coral
 }
 
-
 class Role {
-  +int RoleId
-  +string RoleName
-  +string Description
+  +id:int
+  +role_name:string
+  +description:string (nullable)
 }
 
 class User {
-  +int UserId
-  +int RoleId
-  +string Name
-  +string Email
-  +string HashedPassword
-  +string RecoveryEmail
-  +bool Active
-}
-
-class Client {
-  +int ClientId
-  +int UserId
-  +string RealName
-  +string Phone
-  +bool Active
+  +id:int
+  +role_id:int
+  +name:string(16)
+  +email:string(100)
+  +password:string (hashed)
+  +recovery_email:string (nullable)
+  +email_verified_at:datetime (nullable)
 }
 
 class Category {
-  +int CategoryId
-  +string CategoryName
-  +string Description
+  +categoryId:int
+  +categoryName:string(100)
+  +categoryDescription:string(500, nullable)
 }
 
 class Product {
-  +int ProductId
-  +int CategoryId
-  +string Name
-  +string Description
-  +float Price
-  +string Tag
-  +bool Active
+  +productId:int
+  +categoryId:int
+  +name:string(255)
+  +description:string(255, nullable)
+  +price:float
+  +tag:string(255, nullable)
+  +active:boolean
 }
 
-class Post {
-  +int PostId
-  +int UserId
-  +int ProductId
-  +string Review
-  +float Rating
-  +DateTime PostDate
-  +int LikeCount
-  +bool Active
+class Publication {
+  +publicationId:int
+  +rating:float
+  +publicationDate:datetime
+  +userId:int
+  +productId:int
+  +numberOfLikes:int
+  +active:boolean
+  +review:text (nullable)
 }
 
 class Comment {
-  +int CommentId
-  +int PostId
-  +int UserId
-  +string Content
-  +bool Active
+  +id:int
+  +content:text
+  +userId:int
+  +publicationId:int
 }
 
-class Appointment {
-  +int AppointmentId
-  +int ClientId
-  +string ContactReason
-  +DateTime ScheduledDate
-  +bool Active
+class PublicationLike {
+  +id:int
+  +userId:int
+  +publicationId:int
 }
 
-Role "1" -- "0..*" User : assigns
-User "1" -- "0..1" Client : can be
+class Agenda {
+  +id:int
+  +user_id:int
+  +reason:string
+  +scheduled_date:datetime
+  +phone:string
+  +active:boolean
+}
+
+Role "1" -- "0..*" User : assigned to
 Category "1" -- "0..*" Product : contains
-User "1" -- "0..*" Post : publishes
-Product "1" -- "0..*" Post : appears in
+Product "1" -- "0..*" Publication : appears in
+User "1" -- "0..*" Publication : publishes
 User "1" -- "0..*" Comment : writes
-Post "1" -- "0..*" Comment : has
-Client "1" -- "0..*" Appointment : schedules
+Publication "1" -- "0..*" Comment : has
+User "1" -- "0..*" PublicationLike : likes
+Publication "1" -- "0..*" PublicationLike : liked by
+User "1" -- "0..*" Agenda : schedules
 
 @enduml
