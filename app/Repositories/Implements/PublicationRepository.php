@@ -20,7 +20,7 @@ class PublicationRepository implements IPublicationRepository
      */
     public function findActiveById(int $id)
     {
-        return Publication::where('publicationId', $id)
+        return Publication::with('comments')->where('publicationId', $id)
             ->where('active', true)
             ->first();
     }
