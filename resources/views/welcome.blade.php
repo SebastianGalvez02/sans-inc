@@ -24,12 +24,16 @@
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #e5e5e5;
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #e5e5e5;
             color: #0f1b33;
             font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body.publication-detail-open {
+            overflow: hidden;
         }
 
         .feed-page {
@@ -185,6 +189,526 @@
             color: #7f8794;
             font-size: 1rem;
             font-weight: 700;
+            cursor: pointer;
+            transition: background-color 160ms ease, color 160ms ease;
+        }
+
+        .publication-image-placeholder:hover {
+            background: linear-gradient(135deg, #e9eef6, #d2dbe8);
+            color: #1a2332;
+        }
+
+        .publication-detail {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            overflow-y: auto;
+            padding: 1.6rem 1rem 3rem;
+            background: #eef0f4;
+            animation: publication-expand 220ms ease-out;
+        }
+
+        .publication-card.is-expanded .publication-detail {
+            display: block;
+        }
+
+        .publication-detail-panel {
+            width: min(100%, 864px);
+            margin: 0 auto;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 9px;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.24);
+        }
+
+        .publication-detail-back {
+            display: inline-block;
+            min-height: 34px;
+            padding: 0.35rem 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            color: #1a2332;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .publication-detail-shell {
+            width: min(100%, 864px);
+            margin: 0 auto;
+        }
+
+        .publication-detail-shell > .publication-detail-back {
+            margin: 0 0 1rem;
+            padding-left: 0;
+            font-size: 0.98rem;
+            font-weight: 600;
+        }
+
+        .publication-detail-back:hover {
+            color: #315df4;
+        }
+
+        @keyframes publication-expand {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .publication-expanded-image {
+            min-height: 500px;
+            background: linear-gradient(135deg, #eef2f7, #d5dee9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .publication-expanded-data {
+            padding: 1.5rem 1.5rem 1.25rem;
+            background: #ffffff;
+        }
+
+        .publication-detail-meta {
+            padding: 1.25rem 1.5rem 1.1rem;
+            background: #ffffff;
+        }
+
+        .publication-detail-meta .publication-user,
+        .publication-detail-meta .publication-date {
+            margin: 0;
+        }
+
+        .publication-detail-meta .publication-user {
+            font-size: 1rem;
+        }
+
+        .publication-detail-meta .publication-date {
+            margin-top: 0.25rem;
+        }
+
+        .publication-expanded-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .publication-expanded-data h3 {
+            margin: 0 0 0.7rem;
+            color: #020617;
+            font-size: 1.35rem;
+        }
+
+        .publication-expanded-data p {
+            margin: 0.3rem 0;
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .publication-expanded-data strong {
+            color: #0f1b33;
+        }
+
+        .publication-expanded-data > p:nth-of-type(-n + 3) {
+            display: none;
+        }
+
+        .publication-expanded-data > p:last-child {
+            margin-top: 0;
+            color: #243b63;
+            font-size: 1rem;
+        }
+
+        .comments-section {
+            scroll-margin-top: 90px;
+            padding: 1.1rem;
+            border-top: 1px solid #d8dde6;
+            background: #f8fafc;
+        }
+
+        .comments-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.7rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .comments-heading h3 {
+            margin: 0;
+            color: #0f1b33;
+            font-size: 1.1rem;
+        }
+
+        .comments-heading span {
+            color: #64748b;
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .comment-composer {
+            padding: 0;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+        }
+
+        .comment-composer textarea {
+            width: 100%;
+            min-height: 50px;
+            height: 50px;
+            overflow: hidden;
+            resize: none;
+            border: 1px solid #cfd5df;
+            border-radius: 9px;
+            background: #ffffff;
+            padding: 0.85rem 1rem;
+            outline: 0;
+            color: #111827;
+            font: inherit;
+            font-size: 1rem;
+            line-height: 1.4;
+            transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+
+        .comment-composer textarea:focus {
+            border-color: #1a2332;
+            box-shadow: 0 0 0 3px rgba(26, 35, 50, 0.12);
+        }
+
+        .comment-composer textarea::placeholder {
+            color: #7f8794;
+        }
+
+        .comment-composer textarea[readonly] {
+            cursor: pointer;
+        }
+
+        .comment-composer-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.7rem;
+            padding-top: 0.6rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .comment-character-count {
+            color: #64748b;
+            font-size: 0.82rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .comment-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 0;
+            border-radius: 7px;
+            padding: 0.55rem 0.8rem;
+            background: #1a2332;
+            color: #ffffff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .comment-submit:hover {
+            background: #2a3442;
+        }
+
+        .comment-submit:disabled {
+            cursor: wait;
+            opacity: 0.55;
+        }
+
+        .comment-error,
+        .comments-error {
+            display: none;
+            margin: 0.6rem 0 0;
+            color: #b42318;
+            font-size: 0.86rem;
+        }
+
+        .comments-list {
+            display: grid;
+            gap: 0.7rem;
+            margin-top: 0.9rem;
+        }
+
+        .comments-loading,
+        .comments-empty {
+            margin: 0;
+            padding: 0.8rem;
+            color: #64748b;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .comment-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 8px;
+        }
+
+        .comment-item-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .comment-item-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .comment-author {
+            color: #0f1b33;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .comment-date {
+            color: #94a3b8;
+            font-size: 0.76rem;
+            white-space: nowrap;
+        }
+
+        .comment-text {
+            margin: 0;
+            color: #334155;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+        }
+
+        .comment-actions {
+            position: relative;
+            flex: 0 0 auto;
+        }
+
+        .comment-menu-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 6px;
+            background: transparent;
+            color: #1b2437 !important;
+            cursor: pointer;
+        }
+
+        .comment-menu-button:hover,
+        .comment-menu-button[aria-expanded="true"] {
+            background: #eef2ff;
+            color: #1b2437;
+        }
+
+        .comment-menu-button svg {
+            width: 21px;
+            height: 21px;
+            color: #1b2437;
+            fill: #1b2437;
+        }
+
+        .comment-menu {
+            position: absolute;
+            top: calc(100% + 0.25rem);
+            right: 0;
+            z-index: 4;
+            display: none;
+            min-width: 130px;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #d8dde6;
+            border-radius: 7px;
+            box-shadow: 0 8px 20px rgba(15, 27, 51, 0.16);
+        }
+
+        .comment-menu.is-open {
+            display: grid;
+        }
+
+        .comment-menu-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            min-height: 38px;
+            padding: 0.55rem 0.7rem;
+            border: 0;
+            background: #ffffff;
+            color: #1a2332;
+            font: inherit;
+            font-size: 0.86rem;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .comment-menu-item:hover {
+            background: #f4f7fb;
+        }
+
+        .comment-menu-item[data-delete-comment] {
+            color: #b42318;
+        }
+
+        .comment-menu-item svg {
+            width: 17px;
+            height: 17px;
+            flex: 0 0 auto;
+        }
+
+        .comment-edit-form {
+            display: grid;
+            gap: 0.55rem;
+            margin-top: 0.45rem;
+        }
+
+        .comment-edit-form[hidden] {
+            display: none;
+        }
+
+        .comment-edit-input {
+            width: 100%;
+            min-height: 50px;
+            border: 1px solid #cfd5df;
+            border-radius: 9px;
+            padding: 0.7rem 0.8rem;
+            background: #ffffff;
+            color: #111827;
+            font: inherit;
+            line-height: 1.4;
+            outline: none;
+            resize: vertical;
+        }
+
+        .comment-edit-input:focus {
+            border-color: #1a2332;
+            box-shadow: 0 0 0 3px rgba(26, 35, 50, 0.12);
+        }
+
+        .comment-edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .comment-edit-actions button {
+            min-height: 32px;
+            border-radius: 6px;
+            padding: 0.4rem 0.65rem;
+            font: inherit;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .comment-edit-cancel {
+            border: 1px solid #1b2437;
+            background: #ffffff;
+            color: #1b2437;
+        }
+
+        .comment-edit-save {
+            border: 1px solid #1b2437;
+            background: #1b2437;
+            color: #ffffff;
+        }
+
+        .comment-edit-cancel:hover {
+            background: #f4f7fb;
+        }
+
+        .comment-edit-save:hover {
+            background: #2a3442;
+        }
+
+        .comment-confirm-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.42);
+        }
+
+        .comment-confirm-modal.is-open {
+            display: flex;
+        }
+
+        .comment-confirm-box {
+            width: min(100%, 390px);
+            padding: 1.35rem;
+            background: #ffffff;
+            border-radius: 9px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+        }
+
+        .comment-confirm-box h2 {
+            margin: 0 0 1.1rem;
+            color: #0f1b33;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .comment-confirm-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7rem;
+        }
+
+        .comment-confirm-actions button {
+            min-height: 40px;
+            border-radius: 7px;
+            padding: 0.6rem 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .comment-cancel-button {
+            border: 1px solid #1b2437;
+            background: #ffffff;
+            color: #1b2437;
+        }
+
+        .comment-accept-button {
+            border: 1px solid #1b2437;
+            background: #1b2437;
+            color: #ffffff;
+        }
+
+        .comment-cancel-button:hover {
+            background: #f4f7fb;
+        }
+
+        .comment-accept-button:hover {
+            background: #2a3442;
+        }
+
+        .comment-confirm-actions button:disabled {
+            cursor: wait;
+            opacity: 0.6;
         }
 
         .publication-content {
@@ -363,6 +887,22 @@
             .publication-image-placeholder {
                 min-height: 260px;
             }
+
+            .publication-expanded-image {
+                min-height: 300px;
+            }
+
+            .publication-expanded-data,
+            .publication-detail-meta {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .comment-item-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.2rem;
+            }
         }
     </style>
 </head>
@@ -429,8 +969,18 @@
 <div class="login-required-modal" id="loginRequiredModal" role="dialog" aria-modal="true" aria-labelledby="loginRequiredTitle">
     <div class="login-required-box">
         <h2 id="loginRequiredTitle">Inicie sesión antes</h2>
-        <p>Debes iniciar sesión para dar like a una publicación.</p>
+        <p>Debes iniciar sesión para interactuar con una publicación.</p>
         <button type="button" id="loginRequiredButton">Iniciar Sesión</button>
+    </div>
+</div>
+
+<div class="comment-confirm-modal" id="commentConfirmModal" role="dialog" aria-modal="true" aria-labelledby="commentConfirmTitle">
+    <div class="comment-confirm-box">
+        <h2 id="commentConfirmTitle">Are you sure you want to delete your comment?</h2>
+        <div class="comment-confirm-actions">
+            <button type="button" class="comment-cancel-button" id="commentCancelButton">Cancel</button>
+            <button type="button" class="comment-accept-button" id="commentAcceptButton">Accept</button>
+        </div>
     </div>
 </div>
 
@@ -442,11 +992,17 @@
     const gridViewButton = document.getElementById('gridViewButton');
     const loginRequiredModal = document.getElementById('loginRequiredModal');
     const loginRequiredButton = document.getElementById('loginRequiredButton');
+    const commentConfirmModal = document.getElementById('commentConfirmModal');
+    const commentCancelButton = document.getElementById('commentCancelButton');
+    const commentAcceptButton = document.getElementById('commentAcceptButton');
     const activeFilterBar = document.getElementById('activeFilterBar');
     const activeFilterName = document.getElementById('activeFilterName');
     const clearFilterButton = document.getElementById('clearFilterButton');
 
     let currentFilterProductId = null;
+    let expandedPublicationId = null;
+    let commentToDelete = null;
+    const commentMaxLength = 255;
 
     function escapeHtml(value) {
         return String(value ?? '')
@@ -575,7 +1131,410 @@
         }
     }
 
+    function getCurrentUser() {
+        try {
+            return JSON.parse(localStorage.getItem('sansUser') || 'null');
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function formatCommentDate(value) {
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return 'Fecha no disponible';
+        }
+
+        return date.toLocaleString('es-CL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    }
+
+    function getCommentUserName(comment) {
+        if (comment.userName) {
+            return comment.userName;
+        }
+
+        if (comment.user?.name) {
+            return comment.user.name;
+        }
+
+        return `usuario_${comment.userId}`;
+    }
+
+    function updateCommentCount(detail, count) {
+        const total = detail.querySelector('[data-comments-total]');
+        const triggerCount = detail.closest('.publication-card')?.querySelector('[data-comments-trigger-count]');
+        const label = `${count} ${count === 1 ? 'comment' : 'comments'}`;
+
+        if (total) {
+            total.textContent = label;
+        }
+
+        if (triggerCount) {
+            triggerCount.textContent = count;
+        }
+    }
+
+    function setCommentError(detail, message = '') {
+        const error = detail.querySelector('[data-comment-error]');
+
+        if (!error) {
+            return;
+        }
+
+        error.textContent = message;
+        error.style.display = message ? 'block' : 'none';
+    }
+
+    function updateCommentComposerState(detail) {
+        const textarea = detail.querySelector('[data-comment-input]');
+
+        if (textarea) {
+            textarea.readOnly = !localStorage.getItem('jwtToken');
+        }
+    }
+
+    function closeCommentMenus(container = document) {
+        container.querySelectorAll('.comment-menu.is-open').forEach((menu) => {
+            menu.classList.remove('is-open');
+            menu.parentElement?.querySelector('[data-comment-menu]')?.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    async function updateComment(comment, detail, item, saveButton) {
+        const input = item.querySelector('[data-edit-input]');
+        const content = input.value.trim();
+
+        setCommentError(detail);
+
+        if (content.length < 3) {
+            setCommentError(detail, 'The comment must contain at least 3 characters.');
+            return;
+        }
+
+        saveButton.disabled = true;
+
+        try {
+            const response = await fetch(`/api/comments/${comment.id}`, {
+                method: 'PUT',
+                headers: {
+                    ...apiHeaders(),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content }),
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('sansUser');
+                window.dispatchEvent(new Event('sans-auth-changed'));
+                showLoginRequired();
+                return;
+            }
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || data.error || 'The comment could not be edited.');
+            }
+
+            await loadComments({ publicationId: comment.publicationId }, detail);
+        } catch (error) {
+            setCommentError(detail, error.message || 'The comment could not be edited.');
+        } finally {
+            saveButton.disabled = false;
+        }
+    }
+
+    function renderComments(publication, detail, comments) {
+        const list = detail.querySelector('[data-comments-list]');
+        const currentUser = getCurrentUser();
+        const orderedComments = [...comments].sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
+        updateCommentCount(detail, orderedComments.length);
+
+        if (!orderedComments.length) {
+            list.innerHTML = '<p class="comments-empty">No comments yet.</p>';
+            return;
+        }
+
+        list.innerHTML = orderedComments.map((comment) => {
+            const canManage = currentUser && Number(currentUser.id) === Number(comment.userId);
+            const commentActions = canManage ? `
+                <div class="comment-actions">
+                    <button type="button" class="comment-menu-button" data-comment-menu title="Comment options" aria-label="Comment options" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="1.6" />
+                            <circle cx="12" cy="12" r="1.6" />
+                            <circle cx="12" cy="19" r="1.6" />
+                        </svg>
+                    </button>
+                    <div class="comment-menu">
+                        <button type="button" class="comment-menu-item" data-edit-comment="${comment.id}" title="Editar comentario">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4 16.5-.8 3.3a1 1 0 0 0 1.2 1.2l3.3-.8L19 9a2.1 2.1 0 0 0-3-3L4 16.5Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.5 7.5 2 2" />
+                            </svg>
+                            <span>edit</span>
+                        </button>
+                        <button type="button" class="comment-menu-item" data-delete-comment="${comment.id}" title="Eliminar comentario">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12m-9 0V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7m-7 0 .7 12.2a1.5 1.5 0 0 0 1.5 1.3h3.6a1.5 1.5 0 0 0 1.5-1.3L16 7M10 11v6m4-6v6" />
+                            </svg>
+                            <span>delete</span>
+                        </button>
+                    </div>
+                </div>
+            ` : '';
+
+            return `
+                <article class="comment-item">
+                    <div class="comment-item-content">
+                        <div class="comment-item-header">
+                            <span class="comment-author">@${escapeHtml(getCommentUserName(comment))}</span>
+                            <time class="comment-date">${escapeHtml(formatCommentDate(comment.createdAt))}</time>
+                        </div>
+                        <p class="comment-text" data-comment-text>${escapeHtml(comment.content)}</p>
+                        <div class="comment-edit-form" data-comment-edit-form hidden>
+                            <textarea class="comment-edit-input" data-edit-input maxlength="255">${escapeHtml(comment.content)}</textarea>
+                            <div class="comment-edit-actions">
+                                <button type="button" class="comment-edit-cancel" data-edit-cancel>cancelar</button>
+                                <button type="button" class="comment-edit-save" data-edit-save>aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                    ${commentActions}
+                </article>
+            `;
+        }).join('');
+
+        list.querySelectorAll('[data-comment-menu]').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const menu = button.nextElementSibling;
+                const isOpen = menu.classList.contains('is-open');
+
+                closeCommentMenus(list);
+                menu.classList.toggle('is-open', !isOpen);
+                button.setAttribute('aria-expanded', String(!isOpen));
+            });
+        });
+
+        list.querySelectorAll('[data-edit-comment]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const item = button.closest('.comment-item');
+                const menuButton = item.querySelector('[data-comment-menu]');
+                const menu = button.closest('.comment-menu');
+
+                menu.classList.remove('is-open');
+                menuButton.setAttribute('aria-expanded', 'false');
+                item.querySelector('[data-comment-text]').style.display = 'none';
+                item.querySelector('[data-comment-edit-form]').hidden = false;
+                item.querySelector('[data-edit-input]').focus();
+            });
+        });
+
+        list.querySelectorAll('[data-edit-cancel]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const item = button.closest('.comment-item');
+                item.querySelector('[data-comment-edit-form]').hidden = true;
+                item.querySelector('[data-comment-text]').style.display = '';
+            });
+        });
+
+        list.querySelectorAll('[data-edit-save]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const item = button.closest('.comment-item');
+                const comment = orderedComments.find(
+                    (itemComment) => Number(itemComment.id) === Number(item.querySelector('[data-edit-comment]')?.dataset.editComment)
+                );
+
+                if (comment) {
+                    updateComment(comment, detail, item, button);
+                }
+            });
+        });
+
+        list.querySelectorAll('[data-delete-comment]').forEach((button) => {
+            button.addEventListener('click', () => {
+                commentToDelete = {
+                    id: Number(button.dataset.deleteComment),
+                    publication,
+                    detail,
+                };
+                commentConfirmModal.classList.add('is-open');
+            });
+        });
+    }
+
+    async function loadComments(publication, detail, scrollToComments = false) {
+        const list = detail.querySelector('[data-comments-list]');
+        list.innerHTML = '<p class="comments-loading">Loading comments...</p>';
+        setCommentError(detail);
+
+        try {
+            const response = await fetch(
+                `/api/comments?publicationId=${encodeURIComponent(publication.publicationId)}`,
+                { headers: apiHeaders() }
+            );
+
+            if (!response.ok) {
+                throw new Error('Comments request failed');
+            }
+
+            const comments = await response.json();
+            renderComments(publication, detail, comments);
+
+            if (scrollToComments) {
+                detail.querySelector('[data-comments-section]')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+            }
+        } catch (error) {
+            list.innerHTML = '';
+            setCommentError(detail, 'Comments could not be loaded.');
+        }
+    }
+
+    async function submitComment(publication, detail) {
+        if (!localStorage.getItem('jwtToken')) {
+            showLoginRequired();
+            return;
+        }
+
+        const textarea = detail.querySelector('[data-comment-input]');
+        const submitButton = detail.querySelector('[data-comment-submit]');
+        const content = textarea.value.trim();
+
+        setCommentError(detail);
+
+        if (content.length < 3) {
+            setCommentError(detail, 'The comment must contain at least 3 characters.');
+            return;
+        }
+
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch('/api/comments', {
+                method: 'POST',
+                headers: {
+                    ...apiHeaders(),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    publicationId: publication.publicationId,
+                    content,
+                }),
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('sansUser');
+                window.dispatchEvent(new Event('sans-auth-changed'));
+                showLoginRequired();
+                return;
+            }
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || 'The comment could not be published.');
+            }
+
+            textarea.value = '';
+            detail.querySelector('[data-comment-character-count]').textContent = '0/255';
+            resizeCommentInput(textarea);
+            await loadComments(publication, detail);
+        } catch (error) {
+            setCommentError(detail, error.message || 'The comment could not be published.');
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+    function resizeCommentInput(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${Math.max(50, textarea.scrollHeight)}px`;
+    }
+
+    function closeCommentConfirmation() {
+        commentConfirmModal.classList.remove('is-open');
+        commentToDelete = null;
+    }
+
+    async function deleteComment() {
+        if (!commentToDelete || !localStorage.getItem('jwtToken')) {
+            closeCommentConfirmation();
+            showLoginRequired();
+            return;
+        }
+
+        commentAcceptButton.disabled = true;
+
+        try {
+            const response = await fetch(`/api/comments/${commentToDelete.id}`, {
+                method: 'DELETE',
+                headers: apiHeaders(),
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('sansUser');
+                closeCommentConfirmation();
+                window.dispatchEvent(new Event('sans-auth-changed'));
+                showLoginRequired();
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('Delete comment request failed');
+            }
+
+            const { publication, detail } = commentToDelete;
+            closeCommentConfirmation();
+            await loadComments(publication, detail);
+        } catch (error) {
+            alert('The comment could not be deleted. Please try again.');
+        } finally {
+            commentAcceptButton.disabled = false;
+        }
+    }
+
+    function closePublicationDetail() {
+        feedList.querySelectorAll('.publication-card.is-expanded').forEach((card) => {
+            card.classList.remove('is-expanded');
+        });
+
+        expandedPublicationId = null;
+        document.body.classList.remove('publication-detail-open');
+    }
+
+    function expandPublication(publication, card, scrollToComments = false) {
+        feedList.querySelectorAll('.publication-card.is-expanded').forEach((expandedCard) => {
+            if (expandedCard !== card) {
+                expandedCard.classList.remove('is-expanded');
+            }
+        });
+
+        card.classList.add('is-expanded');
+        expandedPublicationId = publication.publicationId;
+        document.body.classList.add('publication-detail-open');
+
+        const detail = card.querySelector('[data-publication-detail]');
+        updateCommentComposerState(detail);
+        loadComments(publication, detail, scrollToComments);
+    }
+
     function renderPublications(publications, productsById) {
+        document.body.classList.remove('publication-detail-open');
         feedList.innerHTML = '';
         emptyFeed.style.display = publications.length ? 'none' : 'block';
 
@@ -584,13 +1543,14 @@
             const userName = getPublicationUserName(publication);
             const card = document.createElement('article');
             card.className = 'publication-card';
+            card.dataset.publicationId = publication.publicationId;
             card.innerHTML = `
                 <div class="publication-meta">
                     <p class="publication-user">@${escapeHtml(userName)}</p>
                     <p class="publication-date">${escapeHtml(formatRelativeDate(publication.publicationDate))}</p>
                 </div>
 
-                <div class="publication-image-placeholder">aún no disponible</div>
+                <div class="publication-image-placeholder" data-expand-publication role="button" tabindex="0" aria-label="Expand publication">Not available yet</div>
 
                 <div class="publication-content">
                     <div class="publication-heading">
@@ -612,18 +1572,106 @@
                             <span data-like-count>${escapeHtml(publication.numberOfLikes)}</span>
                         </button>
 
-                        <button type="button" class="publication-action">
+                        <button type="button" class="publication-action" data-comments-button title="View comments" aria-label="View comments">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z" />
                             </svg>
-                            <span>0</span>
+                            <span data-comments-trigger-count>0</span>
                         </button>
                     </div>
                 </div>
+
+                <div class="publication-detail" data-publication-detail>
+                    <div class="publication-detail-shell">
+                        <button type="button" class="publication-detail-back" data-close-publication title="Go back to feed" aria-label="Go back to feed">
+                            &lt; go back to feed
+                        </button>
+
+                        <div class="publication-detail-panel">
+                            <div class="publication-detail-meta">
+                                <p class="publication-user">@${escapeHtml(userName)}</p>
+                                <p class="publication-date">${escapeHtml(formatRelativeDate(publication.publicationDate))}</p>
+                            </div>
+
+                        <div class="publication-expanded-image">Not available yet</div>
+                        <div class="publication-expanded-data">
+                            <div class="publication-expanded-heading">
+                                <h3>${escapeHtml(productName)}</h3>
+                                <div class="publication-rating" aria-label="Rating ${escapeHtml(Number(publication.rating).toFixed(1))} de 5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 2.5l2.9 5.88 6.49.94-4.7 4.58 1.11 6.46L12 17.31l-5.8 3.05 1.11-6.46-4.7-4.58 6.49-.94L12 2.5Z" />
+                                    </svg>
+                                    ${escapeHtml(Number(publication.rating).toFixed(1))}
+                                </div>
+                            </div>
+                            <p><strong>User:</strong> @${escapeHtml(userName)}</p>
+                            <p><strong>Date:</strong> ${escapeHtml(formatRelativeDate(publication.publicationDate))}</p>
+                            <p><strong>Rating:</strong> ${escapeHtml(Number(publication.rating).toFixed(1))} / 5</p>
+                            <p><strong>Review:</strong> ${escapeHtml(publication.review)}</p>
+                        </div>
+
+                        <section class="comments-section" data-comments-section aria-label="Publication comments">
+                            <div class="comments-heading">
+                                <h3>Comments</h3>
+                                <span data-comments-total>0 comments</span>
+                            </div>
+                            <div class="comment-composer">
+                                <textarea data-comment-input maxlength="255" readonly placeholder="Write a comment ..." aria-label="Write a comment"></textarea>
+                                <div class="comment-composer-footer">
+                                    <span class="comment-character-count" data-comment-character-count>0/255</span>
+                                    <button type="button" class="comment-submit" data-comment-submit>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4 4 16 8-16 8 3-8-3-8Zm3 8h13" />
+                                        </svg>
+                                        Publish
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="comment-error" data-comment-error></p>
+                            <div class="comments-list" data-comments-list></div>
+                        </section>
+                    </div>
+                </div>
+            </div>
             `;
 
             const likeButton = card.querySelector('[data-like-button]');
             likeButton.addEventListener('click', () => togglePublicationLike(publication, likeButton));
+
+            const imageTrigger = card.querySelector('[data-expand-publication]');
+            imageTrigger.addEventListener('click', () => expandPublication(publication, card));
+            imageTrigger.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    expandPublication(publication, card);
+                }
+            });
+
+            const commentsButton = card.querySelector('[data-comments-button]');
+            commentsButton.addEventListener('click', () => expandPublication(publication, card, true));
+
+            const detail = card.querySelector('[data-publication-detail]');
+            const textarea = detail.querySelector('[data-comment-input]');
+            const characterCount = detail.querySelector('[data-comment-character-count]');
+
+            detail.querySelectorAll('[data-close-publication]').forEach((closeButton) => {
+                closeButton.addEventListener('click', closePublicationDetail);
+            });
+            detail.addEventListener('click', (event) => {
+                if (event.target === detail) {
+                    closePublicationDetail();
+                }
+            });
+            textarea.addEventListener('click', () => {
+                if (!localStorage.getItem('jwtToken')) {
+                    showLoginRequired();
+                }
+            });
+            textarea.addEventListener('input', () => {
+                characterCount.textContent = `${textarea.value.length}/255`;
+                resizeCommentInput(textarea);
+            });
+            detail.querySelector('[data-comment-submit]').addEventListener('click', () => submitComment(publication, detail));
 
             feedList.appendChild(card);
         });
@@ -659,6 +1707,19 @@
             const ordered = [...publications].sort((a, b) => new Date(b.publicationDate) - new Date(a.publicationDate));
 
             renderPublications(ordered, buildProductMap(products));
+
+            if (expandedPublicationId !== null) {
+                const publication = ordered.find(
+                    (item) => Number(item.publicationId) === Number(expandedPublicationId)
+                );
+                const card = feedList.querySelector(
+                    `[data-publication-id="${expandedPublicationId}"]`
+                );
+
+                if (publication && card) {
+                    expandPublication(publication, card);
+                }
+            }
         } catch (error) {
             feedError.style.display = 'block';
         }
@@ -702,6 +1763,29 @@
     loginRequiredModal.addEventListener('click', (event) => {
         if (event.target === loginRequiredModal) {
             loginRequiredModal.classList.remove('is-open');
+        }
+    });
+
+    commentCancelButton.addEventListener('click', closeCommentConfirmation);
+    commentAcceptButton.addEventListener('click', deleteComment);
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.comment-actions')) {
+            closeCommentMenus();
+        }
+    });
+    commentConfirmModal.addEventListener('click', (event) => {
+        if (event.target === commentConfirmModal) {
+            closeCommentConfirmation();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (commentConfirmModal.classList.contains('is-open')) {
+                closeCommentConfirmation();
+            } else if (expandedPublicationId !== null) {
+                closePublicationDetail();
+            }
         }
     });
 

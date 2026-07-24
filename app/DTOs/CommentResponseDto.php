@@ -14,7 +14,8 @@ class CommentResponseDto implements Arrayable, JsonSerializable
         public readonly int $userId,
         public readonly int $publicationId,
         public readonly string $createdAt,
-        public readonly string $updatedAt
+        public readonly string $updatedAt,
+        public readonly string $userName = 'usuario'
     ) {}
 
     public static function fromModel(Comment $comment): self
@@ -25,7 +26,8 @@ class CommentResponseDto implements Arrayable, JsonSerializable
             userId: (int) $comment->userId,
             publicationId: (int) $comment->publicationId,
             createdAt: $comment->created_at ? $comment->created_at->toIso8601String() : '',
-            updatedAt: $comment->updated_at ? $comment->updated_at->toIso8601String() : ''
+            updatedAt: $comment->updated_at ? $comment->updated_at->toIso8601String() : '',
+            userName: (string) ($comment->user?->name ?? 'usuario')
         );
     }
 
@@ -38,6 +40,7 @@ class CommentResponseDto implements Arrayable, JsonSerializable
             'publicationId' => $this->publicationId,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
+            'userName' => $this->userName,
         ];
     }
 
