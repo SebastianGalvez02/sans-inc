@@ -33,7 +33,9 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             // Formateamos la fecha a un string seguro (ISO 8601)
             publicationDate: $publication->publicationDate->toIso8601String(),
             userId: (int) $publication->userId,
-            userName: (string) ($publication->user?->name ?? 'usuario'),
+            userName: $publication->relationLoaded('user')
+                ? (string) ($publication->user?->name ?? 'usuario')
+                : 'usuario',
             likedByCurrentUser: $publication->relationLoaded('likes')
                 && $publication->likes->isNotEmpty(),
             comments: $publication->relationLoaded('comments') ? $publication->comments->map(fn($c) => CommentResponseDto::fromModel($c))->toArray() : null,
