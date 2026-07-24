@@ -185,4 +185,51 @@ class PublicationControllerTest extends TestCase
                 ]
             ]);
     }
+
+    public function test_show_publication_returns_publication_with_comments()
+    {
+        // Arrange
+        $comments = [
+            [
+                'id' => 1,
+                'content' => 'Comentario 1',
+                'userId' => 1,
+                'publicationId' => 3,
+                'createdAt' => now()->toIso8601String(),
+            ]
+        ];
+
+        $dto = new PublicationResponseDto(
+            publicationId: 3,
+            productId: 10,
+            rating: 5,
+            review: 'Excelente',
+            numberOfLikes: 0,
+            publicationDate: now()->toIso8601String(),
+            userId: 1,
+            comments: $comments
+        );
+
+        $serviceMock = $this->mock(IPublicationService::class);
+        $serviceMock->shouldReceive('getPublicationById')
+            ->with(3)
+            ->once()
+            ->andReturn($dto);
+
+        // Act
+        $response = $this->getJson('/api/publications/3');
+
+        // Assert
+        $response->assertStatus(200)
+            ->assertJson([
+                'publicationId' => 3,
+                'productId' => 10,
+                'comments' => [
+                    [
+                        'id' => 1,
+                        'content' => 'Comentario 1',
+                    ]
+                ]
+            ]);
+    }
 }

@@ -16,8 +16,9 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
         public readonly int $numberOfLikes,
         public readonly string $publicationDate,
         public readonly int $userId,
-        public readonly string $userName,
+        public readonly string $userName = 'usuario',
         public readonly bool $likedByCurrentUser = false,
+        public readonly ?array $comments = null,
     ) {
     }
 
@@ -35,12 +36,13 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             userName: (string) ($publication->user?->name ?? 'usuario'),
             likedByCurrentUser: $publication->relationLoaded('likes')
                 && $publication->likes->isNotEmpty(),
+            comments: $publication->relationLoaded('comments') ? $publication->comments->map(fn($c) => CommentResponseDto::fromModel($c))->toArray() : null,
         );
     }
 
     public function toArray(): array
     {
-        return [
+        $data = [
             'publicationId' => $this->publicationId,
             'productId' => $this->productId,
             'rating' => $this->rating,
@@ -48,9 +50,16 @@ class PublicationResponseDto implements Arrayable, JsonSerializable
             'numberOfLikes' => $this->numberOfLikes,
             'publicationDate' => $this->publicationDate,
             'userId' => $this->userId,
-            'userName' => $this->userName,
-            'likedByCurrentUser' => $this->likedByCurrentUser,
         ];
+
+        $data['userName'] = $this->userName;
+        $data['likedByCurrentUser'] = $this->likedByCurrentUser;
+
+        if ($this->comments !== null) {
+            $data['comments'] = $this->comments;
+        }
+
+        return $data;
     }
 
     public function jsonSerialize(): array

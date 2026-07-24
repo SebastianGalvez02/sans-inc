@@ -23,7 +23,7 @@ class PublicationRepository implements IPublicationRepository
      */
     public function findActiveById(int $id)
     {
-        return $this->withViewerLike(Publication::with('user'))
+        return $this->withViewerLike(Publication::with(['user', 'comments']))
             ->where('publicationId', $id)
             ->where('active', true)
             ->first();
