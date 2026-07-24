@@ -584,7 +584,8 @@
 
         .comment-menu {
             position: absolute;
-            top: calc(100% + 0.25rem);
+            top: auto;
+            bottom: calc(100% + 0.25rem);
             right: 0;
             z-index: 4;
             display: none;
